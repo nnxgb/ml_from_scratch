@@ -8,4 +8,6 @@ dependencies = [
     "pandas>=2.3.3",
     "plotly>=6.9.0",
     "quarto-cli>=1.9.38",
+    "torch>=2.13.0",
+    "torchvision>=0.28.0",
 ]

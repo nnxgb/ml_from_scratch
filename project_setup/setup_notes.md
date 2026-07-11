@@ -21,3 +21,6 @@ Use theme guide for development
 # Step 4:
 Create a github public repo and push the code.
 git push -u origin main
+
+# Step 5:
+Added pytorch as `uv add torch torchvision`

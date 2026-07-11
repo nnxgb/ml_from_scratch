@@ -1,7 +1,13 @@
 ---
 title: "ML From Scratch"
 ---
+<br>
 
-This is a Quarto website.
+## [Optimization]{.glow-blue}
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+#### [Goal: Given a function, how can we find its minimum value]{.glow-green}
+
+1. **Understanding Gradients**
+    a. [**Understanding slope/ gradient of lines**](/src/optimization/01_gradient_desc.qmd)
+    b. Understanding gradient of curves
+2. Understanding Gradient Descent

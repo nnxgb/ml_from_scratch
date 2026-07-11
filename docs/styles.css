@@ -14,6 +14,7 @@
    ============================================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=JetBrains+Mono:wght@400;500;700&family=Sono:wght@400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Elms+Sans:ital,wght@0,100..900;1,100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
 
 /* ===== Design tokens ===== */
 :root {
@@ -36,7 +37,7 @@
   --coral-soft: rgba(184, 68, 90, 0.4);
 
   --font-display: "Baloo 2", sans-serif;
-  --font-body: "Sono", monospace;       /* reading mono — proportional, open */
+  --font-body: "Elms Sans", sans-serif;   /* reading mono — proportional, open */
   --font-mono: "JetBrains Mono", monospace;  /* true mono: code, labels */
 
   --radius: 12px;
@@ -284,7 +285,7 @@ a.anchorjs-link:hover { color: var(--blue); text-decoration: none; }
   font-weight: 700;
   font-size: 0.78rem;
   letter-spacing: 0.12em;
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   color: var(--gold);
   border: 1px solid var(--gold-soft);
   border-radius: 999px;
@@ -302,7 +303,8 @@ a.anchorjs-link:hover { color: var(--blue); text-decoration: none; }
 
 /* inline colored keywords */
 .kw-blue  { color: var(--blue);  font-weight: 700; }
-.kw-green { color: var(--green); font-weight: 700; text-transform: uppercase; }
+/*.kw-green { color: var(--green); font-weight: 700; text-transform: uppercase; }*/
+.kw-green { color: var(--green); font-weight: 700; }
 .kw-gold  { color: var(--gold);  font-weight: 700; }
 .kw-coral { color: var(--coral); font-weight: 700; }
 .kw-white { color: var(--text);  font-weight: 700; }
@@ -399,3 +401,10 @@ a.anchorjs-link:hover { color: var(--blue); text-decoration: none; }
 .check-pill.green { color: var(--green); border-color: var(--green-soft); }
 .check-pill.gold  { color: var(--gold);  border-color: var(--gold-soft); }
 .check-pill.coral { color: var(--coral); border-color: var(--coral-soft); }
+
+/* Added: The code below fixed the left and right margin issue*/
+#quarto-content.page-columns,
+.page-columns {
+  grid-template-columns: minmax(0, 1fr) !important;
+  display: block;
+}
