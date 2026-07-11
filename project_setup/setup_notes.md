@@ -17,4 +17,7 @@ Use theme guide for development
 `quarto preview` for live development
 `quarto render` for site creation
 
+
+# Step 4:
 Create a github public repo and push the code.
+git push -u origin main
