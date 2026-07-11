@@ -136,11 +136,27 @@ We observe that:
 Hence, negative slope indicates negative growth (as x increase, z decreases) and the slope tells
 us how fast the decrease is (steepness of decrease in the value of z)
 
-::: {.callout-note}
-Take away:
+::: {.callout-tip title = "## Main Take away"}
 
-1. In the tables above, for each row (i.e., for each $x$), we have taken a one step (increased $x$ by one, the next row) and
-calculated the slope. Slope is constant for straight lines, i.e., for all values of x its the same value.
-2. The slope does not change if we increased $x$ by a step size other than 1
+1. In the tables above, for each row, we have taken a one step (increased x by one; the next row) and calculated the slope. Slope is constant for straight lines, i.e., for all values of x its the same value.
+2. The slope does not change if we increased $x$ by a step size other that 1
 
+Consider:
+
+1. Function: $y = 5x$
+2. $x_1 = a$, then $y_1 = 5 * x_1$. Let's calculate slope at $x_1 = a$
+3. We increment $x_1$ by $c$:
+
+    - $x_2 = a + c$
+    - Then, $y_2 = 5 * x_2 = 5(a + c) = 5a + 5c$. In the tables in above sections, $c = 1$
+
+4. Increase in $x$ = $x_2 - x_1 = a + c - a = c$
+5. Increase in $y$ = $y_2 - y_1 = 5a + 5c - 5a = 5c$
+6. $\text{Slope at } x_1 = \frac{\Delta y}{\Delta x} = \frac{5c}{c} = 5$
+
+Note:
+
+- We get a constant slope value. **Straight lines have a constant slope.**
+- The slope does not depend on value of $a$ (i.e.,value of $x$) and $c$ (step size). This is why slope is a constant value for all $x$.
+- The case above holds true for any value of $a$ (value of $x$) and $c$ (step size)
 :::
