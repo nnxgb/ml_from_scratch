@@ -133,4 +133,14 @@ We observe that:
 1. z decreases by 2 for every 1 unit increase in x
 2. Considering any 2 value of x in the table above, slope = -2
 
-Hence, negative slope indicates negative growth (as x increase, z decreases) and the slope tells us how fast the decrease is (steepness of decrease in the value of z)
+Hence, negative slope indicates negative growth (as x increase, z decreases) and the slope tells
+us how fast the decrease is (steepness of decrease in the value of z)
+
+::: {.callout-note}
+Take away:
+
+1. In the tables above, for each row (i.e., for each $x$), we have taken a one step (increased $x$ by one, the next row) and
+calculated the slope. Slope is constant for straight lines, i.e., for all values of x its the same value.
+2. The slope does not change if we increased $x$ by a step size other than 1
+
+:::

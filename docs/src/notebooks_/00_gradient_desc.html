@@ -441,29 +441,38 @@ Lets consider another function: z = -2x</p>
 </div>
 </div>
 </div>
-<p>We observe that: 1. Now the value of y decreases by a factor of 2 as the value of x increases 2. Considering any 2 value of x in the table, slope = -2 Hence, negative slope indicates negative growth (as x increase, y decreases) and the slope tells us how fast the decrease is (steepness of decrease in the value of y)</p>
-<div id="4ee20f3d-137a-4442-ac70-b46a0f287638" class="cell" data-execution_count="14">
+<p>Take away: 1. In the tables above, for each row, we have taken a one step (increased x by one; the next row) and calculated the slope. Slope is constant for straight lines, i.e., for all values of x its the same value. 2. The slope does not change if we increased <span class="math inline">\(x\)</span> by a step size other that 1</p>
+<div id="4ee20f3d-137a-4442-ac70-b46a0f287638" class="cell" data-execution_count="31">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.arange(<span class="op">-</span><span class="dv">100</span>, <span class="dv">100</span><span class="op">+</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> x <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x <span class="op">**</span> <span class="dv">2</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>px.scatter(x<span class="op">=</span>x, y<span class="op">=</span>z)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>px.scatter(x<span class="op">=</span>x, y<span class="op">=</span>y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="00_gradient_desc_files/figure-html/cell-10-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="00_gradient_desc_files/figure-html/cell-9-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>It looks like a curve! One intution for the curve is that as the value of x gets large the square of the number grows much more than the number smaller to it. Hence, the “growth” is not the same for larger numbers</p>
-<div id="774bac17-12da-4d4c-b0ee-fa35d8f05326" class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>example <span class="op">=</span> pd.DataFrame({</span>
+<p>It looks like a curve! The curve <span class="math inline">\(y = x^2\)</span> is summetrical about the y-axis. This is because <span class="math inline">\((-x)^2 = (x)^2 = x^2\)</span>. Therefore, for <span class="math inline">\(x\)</span> &amp; <span class="math inline">\(-x\)</span> we get the same value for <span class="math inline">\(y\)</span>.</p>
+<p>Varying slope at each <span class="math inline">\(x\)</span>: - The steepness of the curve varies with the value of x (the curve is flatter near x = 0 and gets steeper as we move away from 0 on either side of x-axis. For any - We know from previous section that slope is a measure for steepness. So can we use our previous technique to calulate slope at the a given <span class="math inline">\(x\)</span> for <span class="math inline">\(y = x^2\)</span>?</p>
+<p>Approach 1: Trying the earlier approach: Slope at point <span class="math inline">\(x\)</span> = <span class="math inline">\(\frac{\Delta y}{\Delta x}\)</span></p>
+<p>So we need 2 points again <span class="math inline">\((x_1, x_2)\)</span>. Let: - <span class="math inline">\(x_1 = 1\)</span>, then <span class="math inline">\(y_1 = 1^2 = 1\)</span> - <span class="math inline">\(x_2 = 2\)</span>, then <span class="math inline">\(y_2 = 2^2 = 4\)</span></p>
+<p>Let’s try to find the slope at <span class="math inline">\(x_1\)</span> - <span class="math inline">\(\text{slope at } x_1 = \frac{\Delta y}{\Delta x} = (4-1)/ (2-1) = 3/2 = 1.5\)</span> Now, lets try a diffrent <span class="math inline">\(x_2\)</span> - <span class="math inline">\(x_2 = 3\)</span>, then <span class="math inline">\(y_2 = 3^2 = 9\)</span> - <span class="math inline">\(\text{slope at } x_1 = \frac{\Delta y}{\Delta x} = (9-1)/ (2-1) = 8/2 = 4\)</span></p>
+<p>Oh, we get a different value! Why is that?</p>
+<div id="774bac17-12da-4d4c-b0ee-fa35d8f05326" class="cell" data-execution_count="35">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>y_func <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"x"</span> : x,</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"y"</span> : y,</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>example[<span class="st">"Difference"</span>] <span class="op">=</span> example[<span class="st">"x"</span>] <span class="op">-</span> example[<span class="st">"y"</span>]</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>example.tail(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="13">
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>y_func[<span class="st">"x change"</span>] <span class="op">=</span> y_func[<span class="st">"x"</span>] <span class="op">-</span> y_func[<span class="st">"x"</span>].shift(<span class="dv">1</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>y_func[<span class="st">"y change"</span>] <span class="op">=</span> y_func[<span class="st">"y"</span>] <span class="op">-</span> y_func[<span class="st">"y"</span>].shift(<span class="dv">1</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>y_func[<span class="st">"slope"</span>] <span class="op">=</span> y_func[<span class="st">"y change"</span>] <span class="op">/</span> y_func[<span class="st">"x change"</span>]</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>y_func.loc[y_func[<span class="st">"x"</span>].isin(<span class="bu">range</span>(<span class="op">-</span><span class="dv">10</span>,<span class="dv">11</span>))]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="35">
 <div>
 
 
@@ -473,69 +482,179 @@ Lets consider another function: z = -2x</p>
 <th data-quarto-table-cell-role="th"></th>
 <th data-quarto-table-cell-role="th">x</th>
 <th data-quarto-table-cell-role="th">y</th>
-<th data-quarto-table-cell-role="th">Difference</th>
+<th data-quarto-table-cell-role="th">x change</th>
+<th data-quarto-table-cell-role="th">y change</th>
+<th data-quarto-table-cell-role="th">slope</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<th data-quarto-table-cell-role="th">191</th>
-<td>91</td>
-<td>8281</td>
-<td>-8190</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">192</th>
-<td>92</td>
-<td>8464</td>
-<td>-8372</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">193</th>
-<td>93</td>
-<td>8649</td>
-<td>-8556</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">194</th>
-<td>94</td>
-<td>8836</td>
-<td>-8742</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">195</th>
-<td>95</td>
-<td>9025</td>
-<td>-8930</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">196</th>
-<td>96</td>
-<td>9216</td>
-<td>-9120</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">197</th>
-<td>97</td>
-<td>9409</td>
-<td>-9312</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">198</th>
-<td>98</td>
-<td>9604</td>
-<td>-9506</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">199</th>
-<td>99</td>
-<td>9801</td>
-<td>-9702</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">200</th>
+<th data-quarto-table-cell-role="th">90</th>
+<td>-10</td>
 <td>100</td>
-<td>10000</td>
-<td>-9900</td>
+<td>1.0</td>
+<td>-21.0</td>
+<td>-21.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">91</th>
+<td>-9</td>
+<td>81</td>
+<td>1.0</td>
+<td>-19.0</td>
+<td>-19.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">92</th>
+<td>-8</td>
+<td>64</td>
+<td>1.0</td>
+<td>-17.0</td>
+<td>-17.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">93</th>
+<td>-7</td>
+<td>49</td>
+<td>1.0</td>
+<td>-15.0</td>
+<td>-15.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">94</th>
+<td>-6</td>
+<td>36</td>
+<td>1.0</td>
+<td>-13.0</td>
+<td>-13.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">95</th>
+<td>-5</td>
+<td>25</td>
+<td>1.0</td>
+<td>-11.0</td>
+<td>-11.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">96</th>
+<td>-4</td>
+<td>16</td>
+<td>1.0</td>
+<td>-9.0</td>
+<td>-9.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">97</th>
+<td>-3</td>
+<td>9</td>
+<td>1.0</td>
+<td>-7.0</td>
+<td>-7.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">98</th>
+<td>-2</td>
+<td>4</td>
+<td>1.0</td>
+<td>-5.0</td>
+<td>-5.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">99</th>
+<td>-1</td>
+<td>1</td>
+<td>1.0</td>
+<td>-3.0</td>
+<td>-3.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">100</th>
+<td>0</td>
+<td>0</td>
+<td>1.0</td>
+<td>-1.0</td>
+<td>-1.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">101</th>
+<td>1</td>
+<td>1</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">102</th>
+<td>2</td>
+<td>4</td>
+<td>1.0</td>
+<td>3.0</td>
+<td>3.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">103</th>
+<td>3</td>
+<td>9</td>
+<td>1.0</td>
+<td>5.0</td>
+<td>5.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">104</th>
+<td>4</td>
+<td>16</td>
+<td>1.0</td>
+<td>7.0</td>
+<td>7.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">105</th>
+<td>5</td>
+<td>25</td>
+<td>1.0</td>
+<td>9.0</td>
+<td>9.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">106</th>
+<td>6</td>
+<td>36</td>
+<td>1.0</td>
+<td>11.0</td>
+<td>11.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">107</th>
+<td>7</td>
+<td>49</td>
+<td>1.0</td>
+<td>13.0</td>
+<td>13.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">108</th>
+<td>8</td>
+<td>64</td>
+<td>1.0</td>
+<td>15.0</td>
+<td>15.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">109</th>
+<td>9</td>
+<td>81</td>
+<td>1.0</td>
+<td>17.0</td>
+<td>17.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">110</th>
+<td>10</td>
+<td>100</td>
+<td>1.0</td>
+<td>19.0</td>
+<td>19.0</td>
 </tr>
 </tbody>
 </table>
@@ -543,8 +662,7 @@ Lets consider another function: z = -2x</p>
 </div>
 </div>
 </div>
-<p>Note: If the growth is same, we get a straight line.</p>
-<p>Now lets focus on this growth</p>
+<p>Look closely at the slope column. For y=2xy=2x y=2x, this column was always 2, no matter which pair of points we picked. Here, it’s different every single row!</p>
 
 
 </section>
