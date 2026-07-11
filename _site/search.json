@@ -1,0 +1,30 @@
+[
+  {
+    "objectID": "project_setup/setup_notes.html",
+    "href": "project_setup/setup_notes.html",
+    "title": "Step 2:",
+    "section": "",
+    "text": "uv init\nuv add pandas plotly quarto-cli\nsource .venv/bin/activate\n\nquarto create-project . --type website\nml_scratch % mkdir src && cd src"
+  },
+  {
+    "objectID": "project_setup/setup_notes.html#step-1",
+    "href": "project_setup/setup_notes.html#step-1",
+    "title": "Step 2:",
+    "section": "",
+    "text": "uv init\nuv add pandas plotly quarto-cli\nsource .venv/bin/activate\n\nquarto create-project . --type website\nml_scratch % mkdir src && cd src"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "ML From Scratch",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  }
+]

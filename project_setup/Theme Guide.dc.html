@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=JetBrains+Mono:wght@400;500;700&family=Sono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#fafaf7}a{color:#2b71bd}a:hover{color:#1d5a9e}</style>
+</helmet>
+
+<div style="max-width:1000px;margin:0 auto;padding:56px 40px 80px;font-family:'Sono',monospace;color:#393a40;font-size:14px;line-height:1.75">
+
+  <!-- ===== Guide header ===== -->
+  <div style="margin-bottom:40px">
+    <span style="display:inline-flex;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#c18a24;border:1px solid rgba(193,138,36,0.4);border-radius:999px;padding:0.4em 1.1em;background:#fff;box-shadow:0 0 18px rgba(193,138,36,0.22)">Theme reference</span>
+    <h1 style="font-family:'Baloo 2',sans-serif;font-weight:800;font-size:38px;line-height:1.15;margin:14px 0 6px">Neon on Paper — <span style="color:#2b71bd;text-shadow:0 0 22px rgba(43,113,189,0.32)">writing guide</span></h1>
+    <p style="color:#87888d;margin:0">Everything you can write in a <code style="font-family:'JetBrains Mono',monospace;background:#f0f0ea;border:1px solid #e3e3db;border-radius:4px;padding:0.1em 0.4em;color:#1e8a63;font-size:0.92em">.qmd</code> — element on the left, syntax on the right. Spans: <b>[text]{.class}</b> · Blocks: <b>::: {.class}</b></p>
+  </div>
+
+  <!-- ===== Palette ===== -->
+  <h2 style="font-family:'Baloo 2',sans-serif;font-weight:800;font-size:24px;border-bottom:1px solid #e3e3db;padding-bottom:8px;margin:0 0 18px">Palette</h2>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px">
+    <div style="background:#fff;border:1px solid #e3e3db;border-radius:12px;overflow:hidden">
+      <div style="height:64px;background:#2b71bd"></div>
+      <div style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:11px"><b>blue</b> · #2b71bd<br><span style="color:#87888d">links, notes, primary pop</span></div>
+    </div>
+    <div style="background:#fff;border:1px solid #e3e3db;border-radius:12px;overflow:hidden">
+      <div style="height:64px;background:#1e8a63"></div>
+      <div style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:11px"><b>green</b> · #1e8a63<br><span style="color:#87888d">inline code, tips, wins</span></div>
+    </div>
+    <div style="background:#fff;border:1px solid #e3e3db;border-radius:12px;overflow:hidden">
+      <div style="height:64px;background:#c18a24"></div>
+      <div style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:11px"><b>gold</b> · #c18a24<br><span style="color:#87888d">eyebrow badge, warnings</span></div>
+    </div>
+    <div style="background:#fff;border:1px solid #e3e3db;border-radius:12px;overflow:hidden">
+      <div style="height:64px;background:#b8445a"></div>
+      <div style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:11px"><b>coral</b> · #b8445a<br><span style="color:#87888d">caution, "don't do this"</span></div>
+    </div>
+  </div>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:11px;color:#87888d;margin-bottom:44px">
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#fafaf7;border:1px solid #e3e3db;vertical-align:-1px"></span> bg #fafaf7</span>
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#fff;border:1px solid #e3e3db;vertical-align:-1px"></span> surface #ffffff</span>
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#f0f0ea;border:1px solid #e3e3db;vertical-align:-1px"></span> fills #f0f0ea</span>
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#e3e3db;vertical-align:-1px"></span> border #e3e3db</span>
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#393a40;vertical-align:-1px"></span> text #393a40</span>
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:3px;background:#87888d;vertical-align:-1px"></span> muted #87888d</span>
+  </div>
+
+  <!-- ===== Fonts ===== -->
+  <h2 style="font-family:'Baloo 2',sans-serif;font-weight:800;font-size:24px;border-bottom:1px solid #e3e3db;padding-bottom:8px;margin:0 0 18px">Type</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:44px">
+    <div style="background:#fff;border:1px solid #e3e3db;border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Baloo 2',sans-serif;font-weight:800;font-size:26px">Baloo 2</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#87888d;margin-top:6px">headings — automatic, no class needed</div>
+    </div>
+    <div style="background:#fff;border:1px solid #e3e3db;border-radius:12px;padding:18px 20px">
+      <div style="font-family:'Sono',monospace;font-size:20px">Sono</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#87888d;margin-top:6px">body prose — automatic</div>
+    </div>
+    <div style="background:#fff;border:1px solid #e3e3db;border-radius:12px;padding:18px 20px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:18px">JetBrains Mono</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#87888d;margin-top:6px">code, labels, pills — automatic</div>
+    </div>
+  </div>
+
+  <!-- ===== Component rows: render left / syntax right ===== -->
+  <h2 style="font-family:'Baloo 2',sans-serif;font-weight:800;font-size:24px;border-bottom:1px solid #e3e3db;padding-bottom:8px;margin:0 0 6px">Components</h2>
+  <p style="color:#87888d;font-size:12.5px;margin:0 0 22px">Left = what renders · Right = what you type in the .qmd</p>
+
+  <!-- Eyebrow -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e3e3db;border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff">
+    <div style="padding:22px 24px;display:flex;align-items:center">
+      <span style="display:inline-flex;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#c18a24;border:1px solid rgba(193,138,36,0.4);border-radius:999px;padding:0.4em 1.1em;background:#fff;box-shadow:0 0 18px rgba(193,138,36,0.22)">📄 Paper 01</span>
+    </div>
+    <div style="padding:22px 24px;background:#f0f0ea;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;border-left:1px solid #e3e3db">[📄 Paper 01]{.eyebrow-badge}</div>
+  </div>
+
+  <!-- Title with glow -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e3e3db;border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff">
+    <div style="padding:22px 24px;display:flex;align-items:center">
+      <span style="font-family:'Baloo 2',sans-serif;font-weight:800;font-size:24px">Title with <span style="color:#2b71bd;text-shadow:0 0 22px rgba(43,113,189,0.32)">glowing words</span></span>
+    </div>
+    <div style="padding:22px 24px;background:#f0f0ea;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;border-left:1px solid #e3e3db"># Title with [glowing words]{.glow-blue}<br><br><span style="color:#87888d"># also: .glow-green .glow-gold .glow-coral<br># glow is for the hero only</span></div>
+  </div>
+
+  <!-- Subtitle + keywords -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e3e3db;border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff">
+    <div style="padding:22px 24px;display:flex;align-items:center">
+      <span style="font-family:'JetBrains Mono',monospace;color:#87888d;font-size:13px">don't just <span style="color:#b8445a;font-weight:700">read</span> — <span style="color:#1e8a63;font-weight:700;text-transform:uppercase">derive</span> it, then <span style="color:#393a40;font-weight:700">watch it converge</span></span>
+    </div>
+    <div style="padding:22px 24px;background:#f0f0ea;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;border-left:1px solid #e3e3db">[don't just [read]{.kw-coral} — [derive]{.kw-green} it, then [watch it converge]{.kw-white}]{.subtitle}<br><br><span style="color:#87888d"># .kw-blue .kw-green .kw-gold .kw-coral .kw-white<br># .kw-green auto-uppercases</span></div>
+  </div>
+
+  <!-- Tag pills -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e3e3db;border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff">
+    <div style="padding:22px 24px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;padding:0.45em 1em;border-radius:999px;border:1px solid rgba(43,113,189,0.4);color:#2b71bd;background:#fff">optimization</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;padding:0.45em 1em;border-radius:999px;border:1px solid #e3e3db;color:#87888d;background:#fff">calculus</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;padding:0.45em 1em;border-radius:999px;border:1px solid rgba(30,138,99,0.4);color:#1e8a63;background:#fff">from scratch</span>
+    </div>
+    <div style="padding:22px 24px;background:#f0f0ea;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;border-left:1px solid #e3e3db">::: {.tag-row}<br>[optimization]{.tag-pill .blue} [calculus]{.tag-pill} [from scratch]{.tag-pill .green}<br>:::<br><br><span style="color:#87888d"># plain .tag-pill = gray · add .blue .green .gold .coral</span></div>
+  </div>
+
+  <!-- Stat card -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e3e3db;border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff">
+    <div style="padding:22px 24px;display:flex;align-items:center">
+      <div style="background:#fff;border:1px solid #e3e3db;border-radius:12px;padding:18px 22px;box-shadow:0 1px 4px rgba(34,36,44,0.05);min-width:200px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#87888d;margin-bottom:7px">Iterations</div>
+        <div style="font-family:'Baloo 2',sans-serif;font-weight:800;font-size:30px;line-height:1;color:#2b71bd;margin-bottom:7px">142</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;color:#2b71bd">lr = 0.1</div>
+      </div>
+    </div>
+    <div style="padding:22px 24px;background:#f0f0ea;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;border-left:1px solid #e3e3db">::: {.stat-grid}<br>::: {.stat-card}<br>[Iterations]{.stat-label}<br>[142]{.stat-value .blue}<br>[lr = 0.1]{.stat-caption .blue}<br>:::<br>:::<br><br><span style="color:#87888d"># repeat .stat-card divs inside .stat-grid<br># value/caption colors: .blue .green .gold .coral</span></div>
+  </div>
+
+  <!-- Check pills -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e3e3db;border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff">
+    <div style="padding:22px 24px;display:flex;align-items:center;flex-wrap:wrap;gap:8px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(43,113,189,0.4);border-radius:999px;padding:0.5em 1.1em;background:#fff;color:#2b71bd">✓ derived by hand</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(30,138,99,0.4);border-radius:999px;padding:0.5em 1.1em;background:#fff;color:#1e8a63">✓ no autograd</span>
+    </div>
+    <div style="padding:22px 24px;background:#f0f0ea;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;border-left:1px solid #e3e3db">::: {.check-row}<br>[derived by hand]{.check-pill .blue} [no autograd]{.check-pill .green}<br>:::<br><br><span style="color:#87888d"># ✓ is added automatically</span></div>
+  </div>
+
+  <!-- Callouts -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e3e3db;border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff">
+    <div style="padding:22px 24px;display:flex;flex-direction:column;gap:10px;justify-content:center">
+      <div style="border:1px solid #e3e3db;border-left:4px solid #2b71bd;border-radius:6px;background:#fff;box-shadow:0 1px 4px rgba(34,36,44,0.05);padding:10px 15px">
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#2b71bd;margin-bottom:2px">Note</div>
+        <div style="font-size:12px">blue note</div>
+      </div>
+      <div style="border:1px solid #e3e3db;border-left:4px solid #c18a24;border-radius:6px;background:#fff;box-shadow:0 1px 4px rgba(34,36,44,0.05);padding:10px 15px">
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#c18a24;margin-bottom:2px">Warning</div>
+        <div style="font-size:12px">gold warning</div>
+      </div>
+    </div>
+    <div style="padding:22px 24px;background:#f0f0ea;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;border-left:1px solid #e3e3db">::: {.callout-note}<br>blue note<br>:::<br><br>::: {.callout-warning}<br>gold warning<br>:::<br><br><span style="color:#87888d"># note=blue · tip=green · warning=gold<br># important / caution = coral<br># optional title: ## My title as first line</span></div>
+  </div>
+
+  <!-- Code + inline -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e3e3db;border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff">
+    <div style="padding:22px 24px;display:flex;flex-direction:column;gap:12px;justify-content:center">
+      <span>call <code style="font-family:'JetBrains Mono',monospace;background:#f0f0ea;border:1px solid #e3e3db;border-radius:4px;padding:0.1em 0.4em;color:#1e8a63;font-size:0.92em">np.dot(a, b)</code> inline</span>
+      <div style="background:#fff;border:1px solid #e3e3db;border-radius:12px;padding:12px 16px;box-shadow:0 1px 4px rgba(34,36,44,0.05);font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.6"><span style="color:#7c3aad">def</span> <span style="color:#2b71bd">step</span>(theta, lr=<span style="color:#c18a24">0.1</span>):<br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9aa0ab;font-style:italic"># one update</span><br>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#7c3aad">return</span> theta - lr * grad</div>
+    </div>
+    <div style="padding:22px 24px;background:#f0f0ea;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;border-left:1px solid #e3e3db">call `np.dot(a, b)` inline<br><br>```python<br>def step(theta, lr=0.1):<br>&nbsp;&nbsp;&nbsp;&nbsp;# one update<br>&nbsp;&nbsp;&nbsp;&nbsp;return theta - lr * grad<br>```</div>
+  </div>
+
+  <!-- Math -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e3e3db;border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff">
+    <div style="padding:22px 24px;display:flex;align-items:center;justify-content:center">
+      <div style="background:#fff;border:1px solid #e3e3db;border-radius:12px;padding:16px 26px;box-shadow:0 1px 4px rgba(34,36,44,0.05);font-family:Georgia,serif;font-style:italic;font-size:17px">θ<sub>t+1</sub> = θ<sub>t</sub> − η ∇<sub>θ</sub> ℒ(θ<sub>t</sub>)</div>
+    </div>
+    <div style="padding:22px 24px;background:#f0f0ea;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;border-left:1px solid #e3e3db">$$<br>\theta_{t+1} = \theta_t - \eta \nabla_\theta \mathcal{L}(\theta_t)<br>$$<br><br><span style="color:#87888d"># display math gets a card automatically<br># inline: $\eta$ · colored: [$\eta$]{.kw-blue}</span></div>
+  </div>
+
+  <!-- Blockquote + table -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e3e3db;border-radius:12px;overflow:hidden;margin-bottom:14px;background:#fff">
+    <div style="padding:22px 24px;display:flex;flex-direction:column;gap:16px;justify-content:center">
+      <div style="border-left:3px solid #2b71bd;color:#87888d;padding-left:14px;font-size:12.5px">a pulled-out definition or note-to-self</div>
+      <div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:#87888d;border-bottom:2px solid #e3e3db;padding:4px 8px;gap:8px"><span>Surface</span><span>Steps</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;font-size:12px;border-bottom:1px solid #e3e3db;padding:5px 8px;gap:8px"><span>Convex bowl</span><span>38</span></div>
+      </div>
+    </div>
+    <div style="padding:22px 24px;background:#f0f0ea;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;border-left:1px solid #e3e3db">&gt; a pulled-out definition or note-to-self<br><br>| Surface     | Steps |<br>|-------------|-------|<br>| Convex bowl | 38    |</div>
+  </div>
+
+  <!-- Plotly -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid #e3e3db;border-radius:12px;overflow:hidden;margin-bottom:44px;background:#fff">
+    <div style="padding:22px 24px;display:flex;align-items:center">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#87888d;margin-bottom:8px">plotly colorway (matches the theme)</div>
+        <div style="display:flex;gap:8px">
+          <span style="width:34px;height:34px;border-radius:8px;background:#2b71bd"></span>
+          <span style="width:34px;height:34px;border-radius:8px;background:#1e8a63"></span>
+          <span style="width:34px;height:34px;border-radius:8px;background:#c18a24"></span>
+          <span style="width:34px;height:34px;border-radius:8px;background:#b8445a"></span>
+        </div>
+      </div>
+    </div>
+    <div style="padding:22px 24px;background:#f0f0ea;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;border-left:1px solid #e3e3db">THEME = dict(<br>&nbsp;&nbsp;template="plotly_white",<br>&nbsp;&nbsp;paper_bgcolor="rgba(0,0,0,0)",<br>&nbsp;&nbsp;font=dict(family="JetBrains Mono",<br>&nbsp;&nbsp;&nbsp;&nbsp;size=12, color="#393a40"),<br>&nbsp;&nbsp;colorway=["#2b71bd", "#1e8a63",<br>&nbsp;&nbsp;&nbsp;&nbsp;"#c18a24", "#b8445a"],<br>)<br>fig.update_layout(**THEME)</div>
+  </div>
+
+  <!-- Post skeleton -->
+  <h2 style="font-family:'Baloo 2',sans-serif;font-weight:800;font-size:24px;border-bottom:1px solid #e3e3db;padding-bottom:8px;margin:0 0 18px">New-post skeleton</h2>
+  <div style="background:#f0f0ea;border:1px solid #e3e3db;border-radius:12px;padding:22px 26px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8">---<br>title: "My Post"<br>format:<br>&nbsp;&nbsp;html:<br>&nbsp;&nbsp;&nbsp;&nbsp;theme: none<br>&nbsp;&nbsp;&nbsp;&nbsp;css: style.css<br>&nbsp;&nbsp;&nbsp;&nbsp;toc: true<br>engine: jupyter<br>---<br><br>::: {.hero}<br>[📄 Paper 02]{.eyebrow-badge}<br><br># My Post — [the hook]{.glow-blue}<br><br>[one-line promise with a [keyword]{.kw-coral}]{.subtitle}<br><br>::: {.tag-row}<br>[topic]{.tag-pill .blue} [topic]{.tag-pill}<br>:::<br>:::<br><br>&lt;prose, stats, code, math…&gt;</div>
+
+</div>
+
+</x-dc>
+</body>
+</html>

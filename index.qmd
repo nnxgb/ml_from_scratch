@@ -1,5 +1,5 @@
 ---
-title: "ml_scratch"
+title: "ML From Scratch"
 ---
 
 This is a Quarto website.
