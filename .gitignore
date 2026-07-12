@@ -13,3 +13,4 @@ wheels/
 **/*.quarto_ipynb
 
 /src/notebooks_/
+/project_setup/

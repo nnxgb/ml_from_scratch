@@ -217,7 +217,15 @@ fig.update_layout(
         currentvalue=dict(prefix="c = "),
     )],
     height=600,
-    margin=dict(t=80, b=150)
+    margin=dict(t=80, b=150),
+    legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.30,
+            xanchor="center",
+            x=0.5,
+            title=None            # optional: drop "Legend" title to save vertical space
+    )
 )
 
 fig.show()
@@ -332,9 +340,17 @@ fig.update_layout(
     template="plotly_white",
     xaxis=dict(range=[-6, 6]),
     yaxis=dict(range=[-3, 16]),
-    legend=dict(title="Legend"),
+    # legend=dict(title="Legend"),
     height=350,
-    margin=dict(t=50, b=70)
+    margin=dict(t=50, b=70),
+    legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.25,
+            xanchor="center",
+            x=0.5,
+            title=None            # optional: drop "Legend" title to save vertical space
+    )
     )
 
 fig.show()
@@ -397,9 +413,17 @@ fig.update_layout(
     template="plotly_white",
     xaxis=dict(range=[-6, 6]),
     yaxis=dict(range=[-3, 16]),
-    legend=dict(title="Legend"),
+    # legend=dict(title="Legend"),
     height=350,
-    margin=dict(t=50, b=70)
+    margin=dict(t=50, b=70),
+    legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.25,
+            xanchor="center",
+            x=0.5,
+            title=None            # optional: drop "Legend" title to save vertical space
+    )
 )
 
 fig.show()
@@ -459,9 +483,17 @@ fig.update_layout(
     template="plotly_white",
     xaxis=dict(range=[-6, 6]),
     yaxis=dict(range=[-3, 16]),
-    legend=dict(title="Legend"),
+    # legend=dict(title="Legend"),
     height=350,
-    margin=dict(t=50, b=70)
+    margin=dict(t=50, b=70),
+    legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.25,
+            xanchor="center",
+            x=0.5,
+            title=None            # optional: drop "Legend" title to save vertical space
+    )
 )
 
 fig.show()
