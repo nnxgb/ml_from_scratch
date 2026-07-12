@@ -189,8 +189,8 @@ window.Quarto = {
 <p>Let x be a vaiable with can take any value from -inf to +Inf. We can think of x as the x axis. Now let y = x^2.<br>
 This means that for any value of x (say 2) we just double it to get y. (2 * 2 = 4).<br>
 y = 2x is rule we have defined. We can also call it a function (y is a function of x; as value of y depend solely on the value of x).</p>
-<p>We know x looks like the x-axis, but how does y look. lets plot it.</p>
-<div id="97a552e3-9d20-4844-beeb-98aee1623968" class="cell" data-execution_count="29">
+<p>We know x looks like the x-axis, but how does y look. let’s plot it.</p>
+<div id="97a552e3-9d20-4844-beeb-98aee1623968" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
@@ -208,8 +208,8 @@ y = 2x is rule we have defined. We can also call it a function (y is a function 
 </div>
 </div>
 <p>Its a line which is going upwards as x increases!<br>
-Now lets think why that the case. Lets investigate a few values of x and they corresponding y values.</p>
-<div id="31a516e6-af43-4a59-868e-ddc12a797ec1" class="cell" data-execution_count="19">
+Now let’s think why that the case. Let’s investigate a few values of x and they corresponding y values.</p>
+<div id="31a516e6-af43-4a59-868e-ddc12a797ec1" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>y_func <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"x"</span> : x,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"y"</span> : y,</span>
@@ -219,7 +219,7 @@ Now lets think why that the case. Lets investigate a few values of x and they co
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>y_func[<span class="st">"y change"</span>] <span class="op">=</span> y_func[<span class="st">"y"</span>] <span class="op">-</span> y_func[<span class="st">"y"</span>].shift(<span class="dv">1</span>)</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>y_func.loc[y_func[<span class="st">"x"</span>].isin(<span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">11</span>))].tail(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
@@ -326,8 +326,8 @@ Also, if we keep increasing x the value of y keeps increasing. This is why we se
 <h1>Negative slope</h1>
 <p>What would a negative slope imply? Its actually quite simple.<br>
 The negative sign indicates that the line goes downward as the value of x increase.<br>
-Lets consider another function: z = -2x</p>
-<div id="b246704f-2641-4d70-924a-0c4027980ce8" class="cell" data-execution_count="26">
+Let’s consider another function: z = -2x</p>
+<div id="b246704f-2641-4d70-924a-0c4027980ce8" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.arange(<span class="op">-</span><span class="dv">100</span>, <span class="dv">100</span><span class="op">+</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> x <span class="op">*</span> <span class="op">-</span><span class="dv">2</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -340,7 +340,7 @@ Lets consider another function: z = -2x</p>
 </div>
 </div>
 </div>
-<div id="0210f23f-9c67-457d-8b95-95e2e4ee6350" class="cell" data-execution_count="28">
+<div id="0210f23f-9c67-457d-8b95-95e2e4ee6350" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>z_func <span class="op">=</span> pd.DataFrame({</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"x"</span> : x,</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"y"</span> : z,</span>
@@ -350,7 +350,7 @@ Lets consider another function: z = -2x</p>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>z_func[<span class="st">"y change"</span>] <span class="op">=</span> z_func[<span class="st">"y"</span>] <span class="op">-</span> z_func[<span class="st">"y"</span>].shift(<span class="dv">1</span>)</span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>z_func.loc[z_func[<span class="st">"x"</span>].isin(<span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">11</span>))].tail(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="28">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 
 
@@ -444,11 +444,179 @@ Lets consider another function: z = -2x</p>
 <p>Take away: 1. In the tables above, for each row, we have taken a one step (increased x by one; the next row) and calculated the slope. Slope is constant for straight lines, i.e., for all values of x its the same value. 2. The slope does not change if we increased <span class="math inline">\(x\)</span> by a step size other that 1</p>
 <p>Consider: 1. Function: <span class="math inline">\(y = 5x\)</span> 2. <span class="math inline">\(x_1 = a\)</span>, then <span class="math inline">\(y_1 = 5 * x_1\)</span>. Let’s calculate slope at <span class="math inline">\(x_1 = a\)</span> 3. We increment <span class="math inline">\(x_1\)</span> by <span class="math inline">\(c\)</span>: - <span class="math inline">\(x_2 = a + c\)</span> - Then, <span class="math inline">\(y_2 = 5 * x_2 = 5(a + c) = 5a + 5c\)</span>. In the tables in above sections, <span class="math inline">\(c = 1\)</span> 4. Increase in <span class="math inline">\(x\)</span> = <span class="math inline">\(x_2 - x_1 = a + c - a = c\)</span> 5. Increase in <span class="math inline">\(y\)</span> = <span class="math inline">\(y_2 - y_1 = 5a + 5c - 5a = 5c\)</span> 6. <span class="math inline">\(\text{Slope at } x_1 = \frac{\Delta y}{\Delta x} = 5c/ c = 5\)</span></p>
 <p>Note: - We get a constant slope value. <strong>Straight lines have a constant slope.</strong> - The slope does not depend on value of <span class="math inline">\(a\)</span> (i.e.,value of <span class="math inline">\(x\)</span>) &amp; <span class="math inline">\(c\)</span> (step size). This is why slope is a constant value for all <span class="math inline">\(x\)</span>. - The case above holds true for any value of <span class="math inline">\(a\)</span> (value of <span class="math inline">\(x\)</span>) &amp; <span class="math inline">\(c\)</span> (step size)</p>
-<div id="4ee20f3d-137a-4442-ac70-b46a0f287638" class="cell" data-execution_count="31">
+<section id="section-2-gradient-of-curves" class="level2">
+<h2 class="anchored" data-anchor-id="section-2-gradient-of-curves">Section 2: Gradient of curves</h2>
+<div id="4ee20f3d-137a-4442-ac70-b46a0f287638" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.arange(<span class="op">-</span><span class="dv">100</span>, <span class="dv">100</span><span class="op">+</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x <span class="op">**</span> <span class="dv">2</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>px.scatter(x<span class="op">=</span>x, y<span class="op">=</span>y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="00_gradient_desc_files/figure-html/cell-8-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It’s a curve! The curve <span class="math inline">\(y = x^2\)</span> is symmetrical about the y-axis. This is because <span class="math inline">\((-x)^2 = (x)^2 = x^2\)</span>. Therefore, for <span class="math inline">\(x\)</span> &amp; <span class="math inline">\(-x\)</span> we get the same value for <span class="math inline">\(y\)</span>.</p>
+</section>
+<section id="varying-slope-at-each-x" class="level2">
+<h2 class="anchored" data-anchor-id="varying-slope-at-each-x">Varying slope at each <span class="math inline">\(x\)</span>:</h2>
+<ul>
+<li>The steepness of the curve varies with the value of x (the curve is flatter near x = 0 and gets steeper as we move away from 0 on either side of the x-axis).</li>
+<li>We know from previous section that slope is a measure for steepness. So can we use our previous technique to calculate slope at a given <span class="math inline">\(x\)</span> for the function <span class="math inline">\(y = x^2\)</span>?</li>
+</ul>
+<p>Approach: Slope at point <span class="math inline">\(x\)</span> = <span class="math inline">\(\frac{\Delta y}{\Delta x}\)</span></p>
+<p>So we need 2 points again <span class="math inline">\((x_1, x_2)\)</span>. Let: - <span class="math inline">\(x_1 = 1\)</span>, then <span class="math inline">\(y_1 = 1^2 = 1\)</span> - <span class="math inline">\(x_2 = 2\)</span>, then <span class="math inline">\(y_2 = 2^2 = 4\)</span></p>
+<p>Let’s try to find the slope at <span class="math inline">\(x_1\)</span> - <span class="math inline">\(\text{slope at } x_1 = \frac{\Delta y}{\Delta x} = (4-1)/ (2-1) = 3\)</span></p>
+<p>Now, let’s try a different <span class="math inline">\(x_2\)</span> - <span class="math inline">\(x_2 = 3\)</span>, then <span class="math inline">\(y_2 = 3^2 = 9\)</span> - <span class="math inline">\(\text{slope at } x_1 = \frac{\Delta y}{\Delta x} = (9-1)/ (3-1) = 8/2 = 4\)</span></p>
+<p>Oh, we get a different value! Why is that?</p>
+<p>Like before, let’s analyze this for a general case. Consider:</p>
+<ol type="1">
+<li>Function: <span class="math inline">\(y = x^2\)</span></li>
+<li>Let <span class="math inline">\(x_1 = a\)</span>, then <span class="math inline">\(y_1 = a^2\)</span>. Let’s calculate slope at <span class="math inline">\(x_1 = a\)</span></li>
+<li>We increment <span class="math inline">\(x_1\)</span> by <span class="math inline">\(c\)</span>:
+<ul>
+<li><span class="math inline">\(x_2 = a + c\)</span></li>
+<li>Then, <span class="math inline">\(y_2 = (x_2)^2 = (a + c)^2 = a^2 + c^2 + 2ac\)</span>.</li>
+</ul></li>
+<li>Increase in <span class="math inline">\(x\)</span> = <span class="math inline">\(x_2 - x_1 = a + c - a = c\)</span></li>
+<li>Increase in <span class="math inline">\(y\)</span> = <span class="math inline">\(y_2 - y_1 = (a^2 + c^2 + 2ac) - (a^2) = c(2a + c)\)</span></li>
+<li><span class="math inline">\(\text{Slope at } x_1 = \frac{\Delta y}{\Delta x} = c(2a + c)/ c = 2a + c\)</span></li>
+</ol>
+<p>So we see the slope at <span class="math inline">\(x = a\)</span> does indeed depend on: 1. Value of <span class="math inline">\(x\)</span> (<span class="math inline">\(a\)</span>). This is intuitive by looking at the curve. 2. Value of the step <span class="math inline">\(c\)</span>. - A single point <span class="math inline">\(x = a\)</span> shouldn’t have infinitely many different slopes depending on an arbitrary second point we choose. For the line, this issue didn’t arise because <span class="math inline">\(c\)</span> cancelled out entirely. - <strong>2a+c is really the slope of the chord between <span class="math inline">\((x_1 = a, y_1)\)</span> and <span class="math inline">\((x_2 = a + c, y_2)\)</span></strong>. This follows from the earlier section, slope of line joining any 2 points is <span class="math inline">\(\frac{\Delta y}{\Delta x}\)</span>.</p>
+</section>
+<section id="reducing-the-step-size" class="level2">
+<h2 class="anchored" data-anchor-id="reducing-the-step-size">Reducing the step size</h2>
+<p>We have: - Function: <span class="math inline">\(y = x^2\)</span> - Slope at point <span class="math inline">\((x = a, y = a^2)\)</span> is given by <span class="math inline">\(2a + c\)</span> where <span class="math inline">\(c\)</span> is the step size we take towards the right along x-axis to get the second point for slope calculation.</p>
+<p>Let us consider: <span class="math inline">\(a = 1\)</span> &amp; <span class="math inline">\(c = 3\)</span>: - First point is <span class="math inline">\((x = a, y = a^2)\)</span> = <span class="math inline">\((x = 1, y = 1)\)</span>. This is the point for which we are trying to calculate the slope. - Second point is <span class="math inline">\((x = a + c, y = (a + c)^2)\)</span> = <span class="math inline">\((x = 1 + 3, y = (1 + 3)^2)\)</span> = <span class="math inline">\((x = 4, y = 16)\)</span> - Therefore, <span class="math inline">\(Slope = 2a + c = 2 * 1 + 3 = 5\)</span></p>
+<p>This slope is the slope of the line joining the 2 points <span class="math inline">\((x = 1, y = 1)\)</span> and <span class="math inline">\((x = 4, y = 16)\)</span>. However, this line does not seem to indicate the steepness of the curve at <span class="math inline">\((x = 1, y = 1)\)</span> (point for which we are trying to figure out the slope). From the plot it’s steeper than the steepness of the curve at <span class="math inline">\((x = 1, y = 1)\)</span></p>
+<p>So, we have picked 2 points on the curve, drawn a straight line through them and calculated slope (same as what we did with the straight line case). <strong>Hence, 2a+c is really the slope of the chord between the 2 points.</strong> This is why we get different slopes every time we pick a different <span class="math inline">\(c\)</span> (ie., picking a different second point).<br>
+For a straight line case in previous section, the slope is the same for all points on the line. Therefore, for any 2 points we picked on the line, it was the same line through them. This is no longer the case.</p>
+<p>So how can we now calculate the slope (the steepness) of the curve at <span class="math inline">\((x = 1, y = 1)\)</span>?</p>
+<p>What if we try to pick a point close to <span class="math inline">\((x = 1, y = 1)\)</span> and draw a straight line through it? If the point is close, the straight line through them can indicate the steepness of the curve near <span class="math inline">\((x = 1, y = 1)\)</span>. We can do that by reducing <span class="math inline">\(c\)</span>.</p>
+<div id="24733677-0f4a-4207-86b7-d82f13a7fc6e" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;jupyter&quot;,&quot;value&quot;:{&quot;source_hidden&quot;:true}}" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>extend_len <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>c_values <span class="op">=</span> [<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">0.25</span>, <span class="fl">0.1</span>, <span class="fl">0.01</span>, <span class="fl">0.001</span>, <span class="fl">0.0001</span>]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>x_vals <span class="op">=</span> np.linspace(a <span class="op">-</span> <span class="dv">5</span>, a <span class="op">+</span> <span class="dv">5</span>, <span class="dv">400</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>y_vals <span class="op">=</span> x_vals<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> np.array([a, a<span class="op">**</span><span class="dv">2</span>])</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_extended_line(c):</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    second_point <span class="op">=</span> np.array([a <span class="op">+</span> c, (a <span class="op">+</span> c)<span class="op">**</span><span class="dv">2</span>])</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    direction <span class="op">=</span> second_point <span class="op">-</span> p1</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    length <span class="op">=</span> np.linalg.norm(direction)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    unit_dir <span class="op">=</span> direction <span class="op">/</span> length</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    ext_p1 <span class="op">=</span> p1 <span class="op">-</span> unit_dir <span class="op">*</span> extend_len</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    ext_p2 <span class="op">=</span> second_point <span class="op">+</span> unit_dir <span class="op">*</span> extend_len</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ext_p1, ext_p2, second_point</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_label_text(c):</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    _, _, second_point <span class="op">=</span> get_extended_line(c)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    slope <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> a <span class="op">+</span> c</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (<span class="ss">f"c = </span><span class="sc">{</span>c<span class="sc">}</span><span class="ss"> second point = (</span><span class="sc">{</span>second_point[<span class="dv">0</span>]<span class="sc">:.4f}</span><span class="ss">, </span><span class="sc">{</span>second_point[<span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">)"</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f" Slope = </span><span class="sc">{</span>slope<span class="sc">:.5f}</span><span class="ss">"</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Fixed annotation anchored to the plot area (paper coords), top-center</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fixed_annotation(text):</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span><span class="fl">0.5</span>, y<span class="op">=</span><span class="fl">1.08</span>, xref<span class="op">=</span><span class="st">"paper"</span>, yref<span class="op">=</span><span class="st">"paper"</span>,</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>        text<span class="op">=</span>text, showarrow<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>        font<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"blue"</span>, size<span class="op">=</span><span class="dv">12</span>, weight<span class="op">=</span><span class="st">"bold"</span>),</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>        bgcolor<span class="op">=</span><span class="st">"white"</span>, bordercolor<span class="op">=</span><span class="st">"white"</span>, borderwidth<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>        xanchor<span class="op">=</span><span class="st">"center"</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Base traces ---</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>base_traces <span class="op">=</span> [</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    go.Scatter(x<span class="op">=</span>x_vals, y<span class="op">=</span>y_vals, mode<span class="op">=</span><span class="st">"lines"</span>, name<span class="op">=</span><span class="st">"y = x²"</span>,</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>               line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"royalblue"</span>, width<span class="op">=</span><span class="dv">2</span>)),</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    go.Scatter(x<span class="op">=</span>[a], y<span class="op">=</span>[a<span class="op">**</span><span class="dv">2</span>], mode<span class="op">=</span><span class="st">"markers+text"</span>, name<span class="op">=</span><span class="st">"Point a"</span>,</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>               marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"black"</span>, size<span class="op">=</span><span class="dv">10</span>),</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>               text<span class="op">=</span>[<span class="st">"(a, a²)"</span>], textposition<span class="op">=</span><span class="st">"top center"</span>),</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial frame</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>ext_p1, ext_p2, second_point <span class="op">=</span> get_extended_line(c_values[<span class="dv">0</span>])</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>secant_trace <span class="op">=</span> go.Scatter(</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>[ext_p1[<span class="dv">0</span>], ext_p2[<span class="dv">0</span>]], y<span class="op">=</span>[ext_p1[<span class="dv">1</span>], ext_p2[<span class="dv">1</span>]],</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>, line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, width<span class="op">=</span><span class="dv">2</span>, dash<span class="op">=</span><span class="st">"dot"</span>),</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"Secant line"</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>point_trace <span class="op">=</span> go.Scatter(</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>[second_point[<span class="dv">0</span>]], y<span class="op">=</span>[second_point[<span class="dv">1</span>]],</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"markers"</span>, marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, size<span class="op">=</span><span class="dv">9</span>),</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"Second point"</span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>base_traces <span class="op">+</span> [secant_trace, point_trace],</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>    layout<span class="op">=</span>go.Layout(</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"How the slope changes as c approaches 0"</span>,</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>        xaxis_title<span class="op">=</span><span class="st">"x"</span>, yaxis_title<span class="op">=</span><span class="st">"y"</span>,</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>        template<span class="op">=</span><span class="st">"plotly_white"</span>,</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>        margin<span class="op">=</span><span class="bu">dict</span>(t<span class="op">=</span><span class="dv">120</span>),  <span class="co"># extra room at top for the fixed label</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>        xaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[a <span class="op">-</span> <span class="dv">5</span>, a <span class="op">+</span> <span class="dv">5</span>]),</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>        yaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="bu">min</span>(y_vals) <span class="op">-</span> extend_len, <span class="bu">max</span>(y_vals)]),</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>        annotations<span class="op">=</span>[fixed_annotation(get_label_text(c_values[<span class="dv">0</span>]))],</span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>        updatemenus<span class="op">=</span>[<span class="bu">dict</span>(</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>            <span class="bu">type</span><span class="op">=</span><span class="st">"buttons"</span>,</span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>            showactive<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>            y<span class="op">=</span><span class="fl">1.15</span>, x<span class="op">=</span><span class="fl">1.05</span>,</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>            buttons<span class="op">=</span>[</span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>                <span class="bu">dict</span>(label<span class="op">=</span><span class="st">"Play"</span>, method<span class="op">=</span><span class="st">"animate"</span>,</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>                     args<span class="op">=</span>[<span class="va">None</span>, <span class="bu">dict</span>(frame<span class="op">=</span><span class="bu">dict</span>(duration<span class="op">=</span><span class="dv">1200</span>, redraw<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>                                       fromcurrent<span class="op">=</span><span class="va">True</span>, transition<span class="op">=</span><span class="bu">dict</span>(duration<span class="op">=</span><span class="dv">300</span>))]),</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>                <span class="bu">dict</span>(label<span class="op">=</span><span class="st">"Pause"</span>, method<span class="op">=</span><span class="st">"animate"</span>,</span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>                     args<span class="op">=</span>[[<span class="va">None</span>], <span class="bu">dict</span>(frame<span class="op">=</span><span class="bu">dict</span>(duration<span class="op">=</span><span class="dv">0</span>, redraw<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>                                         mode<span class="op">=</span><span class="st">"immediate"</span>)])</span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>            ]</span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>        )]</span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Build frames ---</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>frames <span class="op">=</span> []</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> c_values:</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>    ext_p1, ext_p2, second_point <span class="op">=</span> get_extended_line(c)</span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>    frames.append(go.Frame(</span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>        data<span class="op">=</span>[</span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>            go.Scatter(x<span class="op">=</span>[ext_p1[<span class="dv">0</span>], ext_p2[<span class="dv">0</span>]], y<span class="op">=</span>[ext_p1[<span class="dv">1</span>], ext_p2[<span class="dv">1</span>]],</span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>                       mode<span class="op">=</span><span class="st">"lines"</span>, line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, width<span class="op">=</span><span class="dv">2</span>, dash<span class="op">=</span><span class="st">"dot"</span>)),</span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>            go.Scatter(x<span class="op">=</span>[second_point[<span class="dv">0</span>]], y<span class="op">=</span>[second_point[<span class="dv">1</span>]],</span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>                       mode<span class="op">=</span><span class="st">"markers"</span>, marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, size<span class="op">=</span><span class="dv">9</span>))</span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>        traces<span class="op">=</span>[<span class="dv">2</span>, <span class="dv">3</span>],</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>        name<span class="op">=</span><span class="bu">str</span>(c),</span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>        layout<span class="op">=</span>go.Layout(</span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>            annotations<span class="op">=</span>[fixed_annotation(get_label_text(c))]</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a>fig.frames <span class="op">=</span> frames</span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Slider ---</span></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a>    sliders<span class="op">=</span>[<span class="bu">dict</span>(</span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a>        steps<span class="op">=</span>[<span class="bu">dict</span>(method<span class="op">=</span><span class="st">"animate"</span>,</span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a>                    args<span class="op">=</span>[[<span class="bu">str</span>(c)], <span class="bu">dict</span>(mode<span class="op">=</span><span class="st">"immediate"</span>,</span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a>                                          frame<span class="op">=</span><span class="bu">dict</span>(duration<span class="op">=</span><span class="dv">300</span>, redraw<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a>                                          transition<span class="op">=</span><span class="bu">dict</span>(duration<span class="op">=</span><span class="dv">300</span>))],</span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a>                    label<span class="op">=</span><span class="ss">f"c=</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>) <span class="cf">for</span> c <span class="kw">in</span> c_values],</span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a>        currentvalue<span class="op">=</span><span class="bu">dict</span>(prefix<span class="op">=</span><span class="st">"c = "</span>)</span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a>    )]</span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -457,216 +625,238 @@ Lets consider another function: z = -2x</p>
 </div>
 </div>
 </div>
-<p>It looks like a curve! The curve <span class="math inline">\(y = x^2\)</span> is summetrical about the y-axis. This is because <span class="math inline">\((-x)^2 = (x)^2 = x^2\)</span>. Therefore, for <span class="math inline">\(x\)</span> &amp; <span class="math inline">\(-x\)</span> we get the same value for <span class="math inline">\(y\)</span>.</p>
-<p>Varying slope at each <span class="math inline">\(x\)</span>: - The steepness of the curve varies with the value of x (the curve is flatter near x = 0 and gets steeper as we move away from 0 on either side of x-axis. For any - We know from previous section that slope is a measure for steepness. So can we use our previous technique to calulate slope at the a given <span class="math inline">\(x\)</span> for <span class="math inline">\(y = x^2\)</span>?</p>
-<p>Approach 1: Trying the earlier approach: Slope at point <span class="math inline">\(x\)</span> = <span class="math inline">\(\frac{\Delta y}{\Delta x}\)</span></p>
-<p>So we need 2 points again <span class="math inline">\((x_1, x_2)\)</span>. Let: - <span class="math inline">\(x_1 = 1\)</span>, then <span class="math inline">\(y_1 = 1^2 = 1\)</span> - <span class="math inline">\(x_2 = 2\)</span>, then <span class="math inline">\(y_2 = 2^2 = 4\)</span></p>
-<p>Let’s try to find the slope at <span class="math inline">\(x_1\)</span> - <span class="math inline">\(\text{slope at } x_1 = \frac{\Delta y}{\Delta x} = (4-1)/ (2-1) = 3/2 = 1.5\)</span> Now, lets try a diffrent <span class="math inline">\(x_2\)</span> - <span class="math inline">\(x_2 = 3\)</span>, then <span class="math inline">\(y_2 = 3^2 = 9\)</span> - <span class="math inline">\(\text{slope at } x_1 = \frac{\Delta y}{\Delta x} = (9-1)/ (2-1) = 8/2 = 4\)</span></p>
-<p>Oh, we get a different value! Why is that?</p>
-<div id="774bac17-12da-4d4c-b0ee-fa35d8f05326" class="cell" data-execution_count="35">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>y_func <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"x"</span> : x,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"y"</span> : y,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>y_func[<span class="st">"x change"</span>] <span class="op">=</span> y_func[<span class="st">"x"</span>] <span class="op">-</span> y_func[<span class="st">"x"</span>].shift(<span class="dv">1</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>y_func[<span class="st">"y change"</span>] <span class="op">=</span> y_func[<span class="st">"y"</span>] <span class="op">-</span> y_func[<span class="st">"y"</span>].shift(<span class="dv">1</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>y_func[<span class="st">"slope"</span>] <span class="op">=</span> y_func[<span class="st">"y change"</span>] <span class="op">/</span> y_func[<span class="st">"x change"</span>]</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>y_func.loc[y_func[<span class="st">"x"</span>].isin(<span class="bu">range</span>(<span class="op">-</span><span class="dv">10</span>,<span class="dv">11</span>))]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="35">
+<p>We can see that when <span class="math inline">\(c\)</span> is very small, the second point is very close to the <span class="math inline">\((x = 1, y = 1)\)</span> and the line through them does indeed show the steepness of the curve at <span class="math inline">\((x = 1, y = 1)\)</span>. So we can still use the slope of lines to estimate the slope of curve, only if we take a very small step.</p>
+<p>Also, when c is approximately 0,<br>
+- <span class="math inline">\(Slope = 2a + c \approx 2a\)</span> - The line joining the 2 very close points on the curve resembles the <strong>tangent of the curve at <span class="math inline">\((x = 1, y = 1)\)</span></strong> - <strong>As c tends to 0 (extremely close to zero), the second point slides into the first point, and the chord becomes the tangent line — the line whose slope matches the curve’s steepness at that point.</strong></p>
+<p>So when <span class="math inline">\(c\)</span> is small, slope only depends on selected value of <span class="math inline">\(x\)</span>.</p>
+</section>
+<section id="understanding-limits" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-limits">Understanding limits</h2>
+<p>A limit asks: what value does an expression approach as one of its parts gets closer and closer to some target, without necessarily ever reaching it? <br> In our case, the expression is the slope <span class="math inline">\(2a+c\)</span>, and the part changing is <span class="math inline">\(c\)</span>, which we are pushing closer and closer to <span class="math inline">\(0\)</span> (but never quite letting it equal <span class="math inline">\(0\)</span>, since <span class="math inline">\(c=0\)</span> would mean the second point isn’t really a second point at all). <br> As <span class="math inline">\(c\)</span> shrinks <span class="math inline">\(1, 0.1, 0.01, 0.001, 0.0001, ...\)</span> the value of <span class="math inline">\(2a+c\)</span> doesn’t jump around; it settles down and gets arbitrarily close to a single fixed number: <span class="math inline">\(2a\)</span></p>
+</section>
+<section id="derivatives" class="level2">
+<h2 class="anchored" data-anchor-id="derivatives">Derivatives</h2>
+<p>We have defined slope as:<br>
+<span class="math inline">\(Slope = \frac{\Delta y}{\Delta x}\)</span></p>
+<p>Note: - <span class="math inline">\(\Delta x\)</span> is simply the increase in the value of <span class="math inline">\(x\)</span>, i.e., from <span class="math inline">\(x = a\)</span> to <span class="math inline">\(x = a + c\)</span>. <span class="math inline">\(\Delta x = a + c - a = c\)</span> - <span class="math inline">\(\Delta y\)</span> is the increase in the function value (i.e., the value of <span class="math inline">\(y\)</span>) as we increase the value of x by a little. This can also be written as <span class="math inline">\(f(a + c) - f(a)\)</span></p>
+<p>So, - <span class="math inline">\(Slope = \frac{\Delta y}{\Delta x} = \frac{f(a + c) - f(a)}{c}\)</span> - And we want <span class="math inline">\(c\)</span> to be very close to zero. In the language of limits, c tends to zero or <span class="math inline">\(c \to 0\)</span></p>
+<p><strong>This is the exact definition of derivatives!</strong></p>
+<p>Definition: For a function <span class="math inline">\(y = f(x)\)</span>, the derivative at <span class="math inline">\(x = a\)</span> is: <br> Derivative of a function <span class="math inline">\(y\)</span> defined as <span class="math inline">\(y = f(x)\)</span> then the derivative of the function at <span class="math inline">\(x = a\)</span>:<br>
+<span class="math inline">\(\displaystyle f'(a) = {\textstyle {\frac {df}{dx}}(a)} = \lim _{h\to 0}{\frac {f(a+h)-f(a)}{h}}\)</span></p>
+<p>So, if we consider a point <span class="math inline">\((P1)\)</span> on the curve and another point <span class="math inline">\((P2)\)</span> very close to it, the slope of the line passing through them <strong>closely approximates the derivative (or gradient or steepness) of the curve</strong> at point <span class="math inline">\(P1\)</span> and this approximation gets exact as <span class="math inline">\(P2\)</span> approaches <span class="math inline">\(P1\)</span>. In that limit, the line becomes the tangent line at point <span class="math inline">\(P1\)</span>.</p>
+<p>Now that we have what we want, we can calculate the steepness of a curve at any point on the curve. <br></p>
+<section id="example-1" class="level4">
+<h4 class="anchored" data-anchor-id="example-1">Example 1:</h4>
+<ul>
+<li>Consider the function <span class="math inline">\(y = x^2\)</span> and we want to calculate the steepness of the curve at <span class="math inline">\((x = 1, y = 1^2) = (1,1)\)</span></li>
+<li>Let’s calculate the derivative.
+<ul>
+<li>Consider a point <span class="math inline">\(P1 = (x = a, y = a^2)\)</span> on the curve.</li>
+<li>Now we nudge <span class="math inline">\(a\)</span> slightly to obtain the second point, <span class="math inline">\(P2 = (x = a + c, y = (a + c)^2)\)</span></li>
+<li><span class="math inline">\(\Delta x = a + c - a = c\)</span></li>
+<li><span class="math inline">\(\Delta y = (a + c)^2 - a^2 = c(2a + c)\)</span></li>
+<li>Therefore, <span class="math inline">\(f'(a) = \lim _{c\to 0}\frac{c(2a + c)}{c} = \lim _{c\to 0} (2a + c) = 2a\)</span></li>
+<li>This means that at any point on the curve <span class="math inline">\(y = x^2\)</span> the steepness of the curve at <span class="math inline">\(x=a\)</span> is equal to <span class="math inline">\(2a\)</span></li>
+</ul></li>
+<li>For our point, gradient at <span class="math inline">\(a = 1\)</span> is equal to <span class="math inline">\(2 * 1  = 2\)</span> Let’s plot a line of slope 2 going through point <span class="math inline">\((1,1)\)</span> to understand the steepness at that point on the curve. The line is the tangent and the steepness of the line indicates how steep the curve is at <span class="math inline">\((1,1)\)</span>.</li>
+</ul>
+<div id="1727912a-383a-46b0-a1ce-63caea2cb000" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;jupyter&quot;,&quot;value&quot;:{&quot;source_hidden&quot;:true}}" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Point of tangency</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>x0, y0 <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>slope <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Curve</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>x_vals <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">400</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>y_vals <span class="op">=</span> x_vals<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Tangent line: y - y0 = slope * (x - x0)  =&gt;  y = y0 + slope*(x - x0)</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>x_line <span class="op">=</span> np.linspace(x0 <span class="op">-</span> <span class="dv">2</span>, x0 <span class="op">+</span> <span class="dv">2</span>, <span class="dv">100</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>y_line <span class="op">=</span> y0 <span class="op">+</span> slope <span class="op">*</span> (x_line <span class="op">-</span> x0)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure()</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot y = x^2</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_vals, y<span class="op">=</span>y_vals,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"y = x²"</span>,</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"royalblue"</span>, width<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot tangent line</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_line, y<span class="op">=</span>y_line,</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"Tangent line (slope = </span><span class="sc">{</span>slope<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, width<span class="op">=</span><span class="dv">2</span>, dash<span class="op">=</span><span class="st">"dash"</span>)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Mark the point of tangency</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>[x0], y<span class="op">=</span>[y0],</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"markers+text"</span>,</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"black"</span>, size<span class="op">=</span><span class="dv">10</span>),</span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span>[<span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>],</span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>    textposition<span class="op">=</span><span class="st">"bottom right"</span></span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Tangent line at (1,1) on y = x² — slope = 2"</span>,</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>    xaxis_title<span class="op">=</span><span class="st">"x"</span>,</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    yaxis_title<span class="op">=</span><span class="st">"y"</span>,</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>    template<span class="op">=</span><span class="st">"plotly_white"</span>,</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    xaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">6</span>, <span class="dv">6</span>]),</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>    yaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">3</span>, <span class="dv">16</span>]),</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span><span class="bu">dict</span>(title<span class="op">=</span><span class="st">"Legend"</span>)</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
 <div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">x</th>
-<th data-quarto-table-cell-role="th">y</th>
-<th data-quarto-table-cell-role="th">x change</th>
-<th data-quarto-table-cell-role="th">y change</th>
-<th data-quarto-table-cell-role="th">slope</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">90</th>
-<td>-10</td>
-<td>100</td>
-<td>1.0</td>
-<td>-21.0</td>
-<td>-21.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">91</th>
-<td>-9</td>
-<td>81</td>
-<td>1.0</td>
-<td>-19.0</td>
-<td>-19.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">92</th>
-<td>-8</td>
-<td>64</td>
-<td>1.0</td>
-<td>-17.0</td>
-<td>-17.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">93</th>
-<td>-7</td>
-<td>49</td>
-<td>1.0</td>
-<td>-15.0</td>
-<td>-15.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">94</th>
-<td>-6</td>
-<td>36</td>
-<td>1.0</td>
-<td>-13.0</td>
-<td>-13.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">95</th>
-<td>-5</td>
-<td>25</td>
-<td>1.0</td>
-<td>-11.0</td>
-<td>-11.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">96</th>
-<td>-4</td>
-<td>16</td>
-<td>1.0</td>
-<td>-9.0</td>
-<td>-9.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">97</th>
-<td>-3</td>
-<td>9</td>
-<td>1.0</td>
-<td>-7.0</td>
-<td>-7.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">98</th>
-<td>-2</td>
-<td>4</td>
-<td>1.0</td>
-<td>-5.0</td>
-<td>-5.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">99</th>
-<td>-1</td>
-<td>1</td>
-<td>1.0</td>
-<td>-3.0</td>
-<td>-3.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">100</th>
-<td>0</td>
-<td>0</td>
-<td>1.0</td>
-<td>-1.0</td>
-<td>-1.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">101</th>
-<td>1</td>
-<td>1</td>
-<td>1.0</td>
-<td>1.0</td>
-<td>1.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">102</th>
-<td>2</td>
-<td>4</td>
-<td>1.0</td>
-<td>3.0</td>
-<td>3.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">103</th>
-<td>3</td>
-<td>9</td>
-<td>1.0</td>
-<td>5.0</td>
-<td>5.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">104</th>
-<td>4</td>
-<td>16</td>
-<td>1.0</td>
-<td>7.0</td>
-<td>7.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">105</th>
-<td>5</td>
-<td>25</td>
-<td>1.0</td>
-<td>9.0</td>
-<td>9.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">106</th>
-<td>6</td>
-<td>36</td>
-<td>1.0</td>
-<td>11.0</td>
-<td>11.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">107</th>
-<td>7</td>
-<td>49</td>
-<td>1.0</td>
-<td>13.0</td>
-<td>13.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">108</th>
-<td>8</td>
-<td>64</td>
-<td>1.0</td>
-<td>15.0</td>
-<td>15.0</td>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">109</th>
-<td>9</td>
-<td>81</td>
-<td>1.0</td>
-<td>17.0</td>
-<td>17.0</td>
-</tr>
-<tr class="odd">
-<th data-quarto-table-cell-role="th">110</th>
-<td>10</td>
-<td>100</td>
-<td>1.0</td>
-<td>19.0</td>
-<td>19.0</td>
-</tr>
-</tbody>
-</table>
-
+<figure class="figure">
+<p><img src="00_gradient_desc_files/figure-html/cell-10-output-1.png" class="img-fluid figure-img"></p>
+</figure>
 </div>
 </div>
 </div>
-<p>Look closely at the slope column. For y=2xy=2x y=2x, this column was always 2, no matter which pair of points we picked. Here, it’s different every single row!</p>
+<p>Let’s check for another point on the curve. Let <span class="math inline">\(x = 2.5\)</span>, the point on curve is <span class="math inline">\((x = 2.5, y = 2.5^2) = (2.5, 6.25)\)</span>. The gradient at this point is <span class="math inline">\(2a = 2 * 2.5 = 5\)</span>.<br>
+Hence, we expect the curve to be steeper here since the gradient here (5) is more than the gradient at <span class="math inline">\((1,1)\)</span> (which is 2). Let’s plot the point <span class="math inline">\((2.5, 6.25)\)</span> on the curve and have a line with slope 5 pass through it. Indeed it’s the tangent to the curve and the steepness of the curve here is more than at point <span class="math inline">\((1,1)\)</span>.</p>
+<div id="26e5d5b4-6a2f-4256-afa2-214525273852" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;jupyter&quot;,&quot;value&quot;:{&quot;source_hidden&quot;:true}}" data-execution_count="8">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Point of tangency</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>x0, y0 <span class="op">=</span> <span class="fl">2.5</span>, <span class="fl">6.25</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>slope <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Curve</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>x_vals <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">400</span>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>y_vals <span class="op">=</span> x_vals<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Tangent line: y - y0 = slope * (x - x0)  =&gt;  y = y0 + slope*(x - x0)</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>x_line <span class="op">=</span> np.linspace(x0 <span class="op">-</span> <span class="dv">2</span>, x0 <span class="op">+</span> <span class="dv">2</span>, <span class="dv">100</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>y_line <span class="op">=</span> y0 <span class="op">+</span> slope <span class="op">*</span> (x_line <span class="op">-</span> x0)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure()</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot y = x^2</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_vals, y<span class="op">=</span>y_vals,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"y = x²"</span>,</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"royalblue"</span>, width<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot tangent line</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_line, y<span class="op">=</span>y_line,</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"Tangent line (slope = </span><span class="sc">{</span>slope<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, width<span class="op">=</span><span class="dv">2</span>, dash<span class="op">=</span><span class="st">"dash"</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Mark the point of tangency</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>[x0], y<span class="op">=</span>[y0],</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"markers+text"</span>,</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"black"</span>, size<span class="op">=</span><span class="dv">10</span>),</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span>[<span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>],</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    textposition<span class="op">=</span><span class="st">"bottom right"</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Tangent line at (2.5,6.25) on y = x² | Slope = 5"</span>,</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>    xaxis_title<span class="op">=</span><span class="st">"x"</span>,</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a>    yaxis_title<span class="op">=</span><span class="st">"y"</span>,</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    template<span class="op">=</span><span class="st">"plotly_white"</span>,</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>    xaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">6</span>, <span class="dv">6</span>]),</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>    yaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">3</span>, <span class="dv">16</span>]),</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span><span class="bu">dict</span>(title<span class="op">=</span><span class="st">"Legend"</span>)</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="00_gradient_desc_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>It is important to note that at this point, a line with any other slope will not be the tangent. Lets plot the point <span class="math inline">\((2.5, 6.25)\)</span> on the curve and have a line with slope 7 instead of 5 pass through it.</p>
+<div id="f32fc212-f3b9-4fc1-809e-da4aadd46395" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Point of tangency</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>x0, y0 <span class="op">=</span> <span class="fl">2.5</span>, <span class="fl">6.25</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>slope <span class="op">=</span> <span class="dv">7</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Curve</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>x_vals <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">400</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>y_vals <span class="op">=</span> x_vals<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Tangent line: y - y0 = slope * (x - x0)  =&gt;  y = y0 + slope*(x - x0)</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>x_line <span class="op">=</span> np.linspace(x0 <span class="op">-</span> <span class="dv">2</span>, x0 <span class="op">+</span> <span class="dv">2</span>, <span class="dv">100</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>y_line <span class="op">=</span> y0 <span class="op">+</span> slope <span class="op">*</span> (x_line <span class="op">-</span> x0)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure()</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot y = x^2</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_vals, y<span class="op">=</span>y_vals,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"y = x²"</span>,</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"royalblue"</span>, width<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot tangent line</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_line, y<span class="op">=</span>y_line,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"Tangent line (slope = </span><span class="sc">{</span>slope<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, width<span class="op">=</span><span class="dv">2</span>, dash<span class="op">=</span><span class="st">"dash"</span>)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Mark the point of tangency</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>[x0], y<span class="op">=</span>[y0],</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"markers+text"</span>,</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"black"</span>, size<span class="op">=</span><span class="dv">10</span>),</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span>[<span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>],</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    textposition<span class="op">=</span><span class="st">"bottom right"</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Tangent line at (2.5,6.25) on y = x² | Slope = 7"</span>,</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    xaxis_title<span class="op">=</span><span class="st">"x"</span>,</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    yaxis_title<span class="op">=</span><span class="st">"y"</span>,</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    template<span class="op">=</span><span class="st">"plotly_white"</span>,</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    xaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">6</span>, <span class="dv">6</span>]),</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>    yaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">3</span>, <span class="dv">16</span>]),</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span><span class="bu">dict</span>(title<span class="op">=</span><span class="st">"Legend"</span>)</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="00_gradient_desc_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As we can see it’s not the tangent.</p>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->

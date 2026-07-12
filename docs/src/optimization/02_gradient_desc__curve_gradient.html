@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rahul Gupta">
+
+<title>Understanding Gradient of a Curve – ML From Scratch</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-158031087360bce0ff56dc785ce39e06.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<script>
+window.PlotlyConfig = {MathJaxConfig: 'local'};
+if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}
+</script>
+<script type="module">import "https://cdn.plot.ly/plotly-3.7.0.min"</script>
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">ML From Scratch</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Understanding Gradient of a Curve</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Rahul Gupta </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Let us consider another function now: <span class="math inline">\(y = x^2\)</span></p>
+<div id="4f2f21bc" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.express <span class="im">as</span> px</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> torch.arange(<span class="op">-</span><span class="dv">100</span>, <span class="dv">100</span><span class="op">+</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> x <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>px.scatter(x<span class="op">=</span>x, y<span class="op">=</span>y, height<span class="op">=</span><span class="dv">300</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div style="height:300px; width:100%;">            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="f3a4e724-bf24-40c1-9192-01aaf812ca3e" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("f3a4e724-bf24-40c1-9192-01aaf812ca3e")) {                    Plotly.newPlot(                        "f3a4e724-bf24-40c1-9192-01aaf812ca3e",                        [{"hovertemplate":"x=%{x}\u003cbr\u003ey=%{y}\u003cextra\u003e\u003c\u002fextra\u003e","legendgroup":"","marker":{"color":"#636efa","symbol":"circle"},"mode":"markers","name":"","orientation":"v","showlegend":false,"x":{"dtype":"i1","bdata":"nJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6\u002fwMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t\u002fg4eLj5OXm5+jp6uvs7e7v8PHy8\u002fT19vf4+fr7\u002fP3+\u002fwABAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNk"},"xaxis":"x","y":{"dtype":"i2","bdata":"ECdJJoQlwSQAJEEjhCLJIRAhWSCkH\u002fEeQB6RHeQcORyQG+kaRBqhGQAZYRjEFykXkBb5FWQV0RRAFLETJBOZEhASiREEEYEQABCBDwQPiQ4QDpkNJA2xDEAM0QtkC\u002fkKkAopCsQJYQkACaEIRAjpB5AHOQfkBpEGQAbxBaQFWQUQBckEhARBBAAEwQOEA0kDEAPZAqQCcQJAAhEC5AG5AZABaQFEASEBAAHhAMQAqQCQAHkAZABRAEAAMQAkABkAEAAJAAQAAQAAAAEABAAJABAAGQAkADEAQABRAGQAeQCQAKkAxADhAAABIQFEAWkBkAG5AeQBEQJAAnECpALZAhADSQOEA8EDAARBBIQEyQQQBVkFpAXxBUAGkQbkBjkHkAfpB0QIoQgACWEJxAkpCpAK+QpkC9ELQAyxDCQNmQ0QDokOBA+BDwAQgRAEEYkREBKZEiQTsRNAFNEUZBX5FZAWKRfEF2EYABmhGUQa6RqQGzkc5ByRHUAe8R6kH1kgECHJIYQiQSMAJMEkhCVJJhAn"},"yaxis":"y","type":"scatter"}],                        {"template":{"data":{"histogram2dcontour":[{"type":"histogram2dcontour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"choropleth":[{"type":"choropleth","colorbar":{"outlinewidth":0,"ticks":""}}],"histogram2d":[{"type":"histogram2d","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"heatmap":[{"type":"heatmap","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"contourcarpet":[{"type":"contourcarpet","colorbar":{"outlinewidth":0,"ticks":""}}],"contour":[{"type":"contour","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"surface":[{"type":"surface","colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]}],"mesh3d":[{"type":"mesh3d","colorbar":{"outlinewidth":0,"ticks":""}}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"parcoords":[{"type":"parcoords","line":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolargl":[{"type":"scatterpolargl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"scattergeo":[{"type":"scattergeo","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterpolar":[{"type":"scatterpolar","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"scattergl":[{"type":"scattergl","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatter3d":[{"type":"scatter3d","line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermap":[{"type":"scattermap","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattermapbox":[{"type":"scattermapbox","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scatterternary":[{"type":"scatterternary","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"scattercarpet":[{"type":"scattercarpet","marker":{"colorbar":{"outlinewidth":0,"ticks":""}}}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"white","linecolor":"white","minorgridcolor":"white","startlinecolor":"#2a3f5f"},"type":"carpet"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}],"barpolar":[{"marker":{"line":{"color":"#E5ECF6","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"pie":[{"automargin":true,"type":"pie"}]},"layout":{"autotypenumbers":"strict","colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"hovermode":"closest","hoverlabel":{"align":"left"},"paper_bgcolor":"white","plot_bgcolor":"#E5ECF6","polar":{"bgcolor":"#E5ECF6","angularaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"radialaxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"ternary":{"bgcolor":"#E5ECF6","aaxis":{"gridcolor":"white","linecolor":"white","ticks":""},"baxis":{"gridcolor":"white","linecolor":"white","ticks":""},"caxis":{"gridcolor":"white","linecolor":"white","ticks":""}},"coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]]},"xaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"yaxis":{"gridcolor":"white","linecolor":"white","ticks":"","title":{"standoff":15},"zerolinecolor":"white","automargin":true,"zerolinewidth":2},"scene":{"xaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"yaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2},"zaxis":{"backgroundcolor":"#E5ECF6","gridcolor":"white","linecolor":"white","showbackground":true,"ticks":"","zerolinecolor":"white","gridwidth":2}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"geo":{"bgcolor":"white","landcolor":"#E5ECF6","subunitcolor":"white","showland":true,"showlakes":true,"lakecolor":"white"},"title":{"x":0.05},"mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30}}},"xaxis":{"anchor":"y","domain":[0.0,1.0],"title":{"text":"x"}},"yaxis":{"anchor":"x","domain":[0.0,1.0],"title":{"text":"y"}},"legend":{"tracegroupgap":0},"height":300},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('f3a4e724-bf24-40c1-9192-01aaf812ca3e');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+<p><br> <strong>It’s a curve!</strong> <br> Note that, the curve <span class="math inline">\(y = x^2\)</span> is symmetrical about the y-axis. This is because <span class="math inline">\((-x)^2 = (x)^2 = x^2\)</span>. Therefore, for <span class="math inline">\(x\)</span> and <span class="math inline">\(-x\)</span> we get the same value for <span class="math inline">\(y\)</span>.</p>
+<section id="varying-slope-at-each-x" class="level2">
+<h2 class="anchored" data-anchor-id="varying-slope-at-each-x">Varying slope at each <span class="math inline">\(x\)</span>:</h2>
+<ul>
+<li>The steepness of the curve varies with the value of x (the curve is flatter near x = 0 and gets steeper as we move away from 0 on either side of the x-axis).</li>
+<li>We know from previous section that slope is a measure for steepness. So can we use our previous technique to calculate slope at a given <span class="math inline">\(x\)</span> for the function <span class="math inline">\(y = x^2\)</span>?</li>
+</ul>
+<p>Approach: Slope at point <span class="math inline">\(x\)</span> = <span class="math inline">\(\frac{\Delta y}{\Delta x}\)</span></p>
+<p>So we need 2 points again <span class="math inline">\((x_1, x_2)\)</span>. Let:</p>
+<ul>
+<li><span class="math inline">\(x_1 = 1\)</span>, then <span class="math inline">\(y_1 = 1^2 = 1\)</span></li>
+<li><span class="math inline">\(x_2 = 2\)</span>, then <span class="math inline">\(y_2 = 2^2 = 4\)</span></li>
+</ul>
+<p>Let’s try to find the slope at <span class="math inline">\(x_1\)</span> <br></p>
+<ul>
+<li><span class="math inline">\(\text{slope at } x_1 = \frac{\Delta y}{\Delta x} = (4-1)/ (2-1) = 3\)</span></li>
+</ul>
+<p>Now, let’s try a different <span class="math inline">\(x_2\)</span></p>
+<ul>
+<li><span class="math inline">\(x_2 = 3\)</span>, then <span class="math inline">\(y_2 = 3^2 = 9\)</span></li>
+<li><span class="math inline">\(\text{slope at } x_1 = \frac{\Delta y}{\Delta x} = (9-1)/ (3-1) = 8/2 = 4\)</span></li>
+</ul>
+<p><span class="glow-red"><strong>Oh, we get a different value! Why is that?</strong></span></p>
+<p>Like before, let’s analyze this for a general case. Consider:</p>
+<ol type="1">
+<li>Function: <span class="math inline">\(y = x^2\)</span></li>
+<li>Let <span class="math inline">\(x_1 = a\)</span>, then <span class="math inline">\(y_1 = a^2\)</span>. Let’s calculate slope at <span class="math inline">\(x_1 = a\)</span></li>
+<li>We increment <span class="math inline">\(x_1\)</span> by <span class="math inline">\(c\)</span>:
+<ul>
+<li><span class="math inline">\(x_2 = a + c\)</span></li>
+<li>Then, <span class="math inline">\(y_2 = (x_2)^2 = (a + c)^2 = a^2 + c^2 + 2ac\)</span>.</li>
+</ul></li>
+<li>Increase in <span class="math inline">\(x\)</span> = <span class="math inline">\(x_2 - x_1 = a + c - a = c\)</span></li>
+<li>Increase in <span class="math inline">\(y\)</span> = <span class="math inline">\(y_2 - y_1 = (a^2 + c^2 + 2ac) - (a^2) = c(2a + c)\)</span></li>
+<li><span class="math inline">\(\text{Slope at } x_1 = \frac{\Delta y}{\Delta x} = c(2a + c)/ c = 2a + c\)</span></li>
+</ol>
+<p>So we see the slope (steepness of the curve) at <span class="math inline">\(x = a\)</span> does indeed depend on:</p>
+<ol type="1">
+<li>Value of <span class="math inline">\(x\)</span> (i.e., <span class="math inline">\(a\)</span>). This is intuitive by looking at the curve.</li>
+<li>Value of the step <span class="math inline">\(c\)</span>.
+<ul>
+<li>A single point on the curve <span class="math inline">\((x = a, y = a^2)\)</span> shouldn’t have infinitely many different slopes depending on an arbitrary second point we choose. For the line, this issue didn’t arise because <span class="math inline">\(c\)</span> cancelled out entirely.</li>
+<li><strong>2a+c is really the slope of the chord between <span class="math inline">\((x_1 = a, y_1)\)</span> and <span class="math inline">\((x_2 = a + c, y_2)\)</span></strong>. This follows from the earlier section, slope of line joining any 2 points is <span class="math inline">\(\frac{\Delta y}{\Delta x}\)</span>.</li>
+</ul></li>
+</ol>
+</section>
+<section id="reducing-the-step-size" class="level2">
+<h2 class="anchored" data-anchor-id="reducing-the-step-size">Reducing the step size</h2>
+<p>We have:</p>
+<ul>
+<li>Function: <span class="math inline">\(y = x^2\)</span></li>
+<li>Slope at point <span class="math inline">\((x = a, y = a^2)\)</span> is given by <span class="math inline">\(2a + c\)</span> where <span class="math inline">\(c\)</span> is the step size we take towards the right along x-axis to get the second point for slope calculation.</li>
+</ul>
+<p>Let us consider: <span class="math inline">\(a = 1\)</span> &amp; <span class="math inline">\(c = 3\)</span>:</p>
+<ul>
+<li>First point is <span class="math inline">\((x = a, y = a^2)\)</span> = <span class="math inline">\((x = 1, y = 1)\)</span>. This is the point for which we are trying to calculate the slope.</li>
+<li>Second point is <span class="math inline">\((x = a + c, y = (a + c)^2)\)</span> = <span class="math inline">\((x = 1 + 3, y = (1 + 3)^2)\)</span> = <span class="math inline">\((x = 4, y = 16)\)</span></li>
+<li>Therefore, <span class="math inline">\(Slope = 2a + c = 2 * 1 + 3 = 5\)</span></li>
+</ul>
+<p>This slope is the slope of the line joining the 2 points <span class="math inline">\((x = 1, y = 1)\)</span> and <span class="math inline">\((x = 4, y = 16)\)</span>. However, this line does not seem to indicate the steepness of the curve at <span class="math inline">\((x = 1, y = 1)\)</span> (point for which we are trying to figure out the slope). From the plot it’s steeper than the steepness of the curve at <span class="math inline">\((x = 1, y = 1)\)</span></p>
+<p>So, we have picked 2 points on the curve, drawn a straight line through them and calculated slope (same as what we did with the straight line case). <strong>Hence, 2a+c is really the slope of the chord between the 2 points.</strong> <br> This is why we get different slopes every time we pick a different <span class="math inline">\(c\)</span> (ie., picking a different second point). For a straight line case in previous section, the slope is the same for all points on the line. Therefore, for any 2 points we picked on the line, it was the same line through them. This is no longer the case.</p>
+<p>So how can we now calculate the slope (the steepness) of the curve at <span class="math inline">\((x = 1, y = 1)\)</span>?</p>
+<p>What if we try to pick a point close to <span class="math inline">\((x = 1, y = 1)\)</span> and draw a straight line through it? If the point is close, the straight line through them can indicate the steepness of the curve near <span class="math inline">\((x = 1, y = 1)\)</span>. We can do that by reducing <span class="math inline">\(c\)</span>.</p>
+<div id="e5d29b61" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>extend_len <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>c_values <span class="op">=</span> [<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="fl">0.5</span>, <span class="fl">0.25</span>, <span class="fl">0.1</span>, <span class="fl">0.01</span>, <span class="fl">0.001</span>, <span class="fl">0.0001</span>]</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>x_vals <span class="op">=</span> np.linspace(a <span class="op">-</span> <span class="dv">5</span>, a <span class="op">+</span> <span class="dv">5</span>, <span class="dv">400</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>y_vals <span class="op">=</span> x_vals<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> np.array([a, a<span class="op">**</span><span class="dv">2</span>])</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_extended_line(c):</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    second_point <span class="op">=</span> np.array([a <span class="op">+</span> c, (a <span class="op">+</span> c)<span class="op">**</span><span class="dv">2</span>])</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    direction <span class="op">=</span> second_point <span class="op">-</span> p1</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    length <span class="op">=</span> np.linalg.norm(direction)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    unit_dir <span class="op">=</span> direction <span class="op">/</span> length</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    ext_p1 <span class="op">=</span> p1 <span class="op">-</span> unit_dir <span class="op">*</span> extend_len</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    ext_p2 <span class="op">=</span> second_point <span class="op">+</span> unit_dir <span class="op">*</span> extend_len</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ext_p1, ext_p2, second_point</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_label_text(c):</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    _, _, second_point <span class="op">=</span> get_extended_line(c)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    slope <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> a <span class="op">+</span> c</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (<span class="ss">f"c = </span><span class="sc">{</span>c<span class="sc">}</span><span class="ss"> second point = (</span><span class="sc">{</span>second_point[<span class="dv">0</span>]<span class="sc">:.4f}</span><span class="ss">, </span><span class="sc">{</span>second_point[<span class="dv">1</span>]<span class="sc">:.4f}</span><span class="ss">)"</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>            <span class="ss">f" Slope = </span><span class="sc">{</span>slope<span class="sc">:.5f}</span><span class="ss">"</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Fixed annotation anchored to the plot area (paper coords), top-center</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fixed_annotation(text):</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        x<span class="op">=</span><span class="fl">0.5</span>, y<span class="op">=</span><span class="fl">1.08</span>, xref<span class="op">=</span><span class="st">"paper"</span>, yref<span class="op">=</span><span class="st">"paper"</span>,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        text<span class="op">=</span>text, showarrow<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        font<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"blue"</span>, size<span class="op">=</span><span class="dv">12</span>, weight<span class="op">=</span><span class="st">"bold"</span>),</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        bgcolor<span class="op">=</span><span class="st">"white"</span>, bordercolor<span class="op">=</span><span class="st">"white"</span>, borderwidth<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        xanchor<span class="op">=</span><span class="st">"center"</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Base traces ---</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>base_traces <span class="op">=</span> [</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>    go.Scatter(x<span class="op">=</span>x_vals, y<span class="op">=</span>y_vals, mode<span class="op">=</span><span class="st">"lines"</span>, name<span class="op">=</span><span class="st">"y = x²"</span>,</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>               line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"royalblue"</span>, width<span class="op">=</span><span class="dv">2</span>)),</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    go.Scatter(x<span class="op">=</span>[a], y<span class="op">=</span>[a<span class="op">**</span><span class="dv">2</span>], mode<span class="op">=</span><span class="st">"markers+text"</span>, name<span class="op">=</span><span class="st">"Point a"</span>,</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>               marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"black"</span>, size<span class="op">=</span><span class="dv">10</span>),</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>               text<span class="op">=</span>[<span class="st">"(a, a²)"</span>], textposition<span class="op">=</span><span class="st">"top center"</span>),</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Initial frame</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>ext_p1, ext_p2, second_point <span class="op">=</span> get_extended_line(c_values[<span class="dv">0</span>])</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>secant_trace <span class="op">=</span> go.Scatter(</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>[ext_p1[<span class="dv">0</span>], ext_p2[<span class="dv">0</span>]], y<span class="op">=</span>[ext_p1[<span class="dv">1</span>], ext_p2[<span class="dv">1</span>]],</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>, line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, width<span class="op">=</span><span class="dv">2</span>, dash<span class="op">=</span><span class="st">"dot"</span>),</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"Secant line"</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>point_trace <span class="op">=</span> go.Scatter(</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>[second_point[<span class="dv">0</span>]], y<span class="op">=</span>[second_point[<span class="dv">1</span>]],</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"markers"</span>, marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, size<span class="op">=</span><span class="dv">9</span>),</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"Second point"</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure(</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>base_traces <span class="op">+</span> [secant_trace, point_trace],</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>    layout<span class="op">=</span>go.Layout(</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>        title<span class="op">=</span><span class="st">"How the slope changes as c approaches 0"</span>,</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>        xaxis_title<span class="op">=</span><span class="st">"x"</span>, yaxis_title<span class="op">=</span><span class="st">"y"</span>,</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>        template<span class="op">=</span><span class="st">"plotly_white"</span>,</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>        margin<span class="op">=</span><span class="bu">dict</span>(t<span class="op">=</span><span class="dv">120</span>),  <span class="co"># extra room at top for the fixed label</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>        xaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[a <span class="op">-</span> <span class="dv">5</span>, a <span class="op">+</span> <span class="dv">5</span>]),</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>        yaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="bu">min</span>(y_vals) <span class="op">-</span> extend_len, <span class="bu">max</span>(y_vals)]),</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>        annotations<span class="op">=</span>[fixed_annotation(get_label_text(c_values[<span class="dv">0</span>]))],</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>        updatemenus<span class="op">=</span>[<span class="bu">dict</span>(</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>            <span class="bu">type</span><span class="op">=</span><span class="st">"buttons"</span>,</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>            showactive<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>            y<span class="op">=</span><span class="fl">0.8</span>, x<span class="op">=</span><span class="fl">0.10</span>,</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>            buttons<span class="op">=</span>[</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>                <span class="bu">dict</span>(label<span class="op">=</span><span class="st">"Play"</span>, method<span class="op">=</span><span class="st">"animate"</span>,</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>                     args<span class="op">=</span>[<span class="va">None</span>, <span class="bu">dict</span>(frame<span class="op">=</span><span class="bu">dict</span>(duration<span class="op">=</span><span class="dv">1200</span>, redraw<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>                                       fromcurrent<span class="op">=</span><span class="va">True</span>, transition<span class="op">=</span><span class="bu">dict</span>(duration<span class="op">=</span><span class="dv">300</span>))]),</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>                <span class="bu">dict</span>(label<span class="op">=</span><span class="st">"Pause"</span>, method<span class="op">=</span><span class="st">"animate"</span>,</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>                     args<span class="op">=</span>[[<span class="va">None</span>], <span class="bu">dict</span>(frame<span class="op">=</span><span class="bu">dict</span>(duration<span class="op">=</span><span class="dv">0</span>, redraw<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>                                         mode<span class="op">=</span><span class="st">"immediate"</span>)])</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>            ]</span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>        )]</span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Build frames ---</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>frames <span class="op">=</span> []</span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> c_values:</span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>    ext_p1, ext_p2, second_point <span class="op">=</span> get_extended_line(c)</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a>    frames.append(go.Frame(</span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>        data<span class="op">=</span>[</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>            go.Scatter(x<span class="op">=</span>[ext_p1[<span class="dv">0</span>], ext_p2[<span class="dv">0</span>]], y<span class="op">=</span>[ext_p1[<span class="dv">1</span>], ext_p2[<span class="dv">1</span>]],</span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>                       mode<span class="op">=</span><span class="st">"lines"</span>, line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, width<span class="op">=</span><span class="dv">2</span>, dash<span class="op">=</span><span class="st">"dot"</span>)),</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a>            go.Scatter(x<span class="op">=</span>[second_point[<span class="dv">0</span>]], y<span class="op">=</span>[second_point[<span class="dv">1</span>]],</span>
+<span id="cb2-97"><a href="#cb2-97" aria-hidden="true" tabindex="-1"></a>                       mode<span class="op">=</span><span class="st">"markers"</span>, marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, size<span class="op">=</span><span class="dv">9</span>))</span>
+<span id="cb2-98"><a href="#cb2-98" aria-hidden="true" tabindex="-1"></a>        ],</span>
+<span id="cb2-99"><a href="#cb2-99" aria-hidden="true" tabindex="-1"></a>        traces<span class="op">=</span>[<span class="dv">2</span>, <span class="dv">3</span>],</span>
+<span id="cb2-100"><a href="#cb2-100" aria-hidden="true" tabindex="-1"></a>        name<span class="op">=</span><span class="bu">str</span>(c),</span>
+<span id="cb2-101"><a href="#cb2-101" aria-hidden="true" tabindex="-1"></a>        layout<span class="op">=</span>go.Layout(</span>
+<span id="cb2-102"><a href="#cb2-102" aria-hidden="true" tabindex="-1"></a>            annotations<span class="op">=</span>[fixed_annotation(get_label_text(c))]</span>
+<span id="cb2-103"><a href="#cb2-103" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-104"><a href="#cb2-104" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb2-105"><a href="#cb2-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-106"><a href="#cb2-106" aria-hidden="true" tabindex="-1"></a>fig.frames <span class="op">=</span> frames</span>
+<span id="cb2-107"><a href="#cb2-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-108"><a href="#cb2-108" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Slider ---</span></span>
+<span id="cb2-109"><a href="#cb2-109" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb2-110"><a href="#cb2-110" aria-hidden="true" tabindex="-1"></a>    sliders<span class="op">=</span>[<span class="bu">dict</span>(</span>
+<span id="cb2-111"><a href="#cb2-111" aria-hidden="true" tabindex="-1"></a>        steps<span class="op">=</span>[<span class="bu">dict</span>(method<span class="op">=</span><span class="st">"animate"</span>,</span>
+<span id="cb2-112"><a href="#cb2-112" aria-hidden="true" tabindex="-1"></a>                    args<span class="op">=</span>[[<span class="bu">str</span>(c)], <span class="bu">dict</span>(mode<span class="op">=</span><span class="st">"immediate"</span>,</span>
+<span id="cb2-113"><a href="#cb2-113" aria-hidden="true" tabindex="-1"></a>                                          frame<span class="op">=</span><span class="bu">dict</span>(duration<span class="op">=</span><span class="dv">300</span>, redraw<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb2-114"><a href="#cb2-114" aria-hidden="true" tabindex="-1"></a>                                          transition<span class="op">=</span><span class="bu">dict</span>(duration<span class="op">=</span><span class="dv">300</span>))],</span>
+<span id="cb2-115"><a href="#cb2-115" aria-hidden="true" tabindex="-1"></a>                    label<span class="op">=</span><span class="ss">f"c=</span><span class="sc">{</span>c<span class="sc">}</span><span class="ss">"</span>) <span class="cf">for</span> c <span class="kw">in</span> c_values],</span>
+<span id="cb2-116"><a href="#cb2-116" aria-hidden="true" tabindex="-1"></a>        currentvalue<span class="op">=</span><span class="bu">dict</span>(prefix<span class="op">=</span><span class="st">"c = "</span>),</span>
+<span id="cb2-117"><a href="#cb2-117" aria-hidden="true" tabindex="-1"></a>    )],</span>
+<span id="cb2-118"><a href="#cb2-118" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">600</span>,</span>
+<span id="cb2-119"><a href="#cb2-119" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">=</span><span class="bu">dict</span>(t<span class="op">=</span><span class="dv">80</span>, b<span class="op">=</span><span class="dv">150</span>)</span>
+<span id="cb2-120"><a href="#cb2-120" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-121"><a href="#cb2-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-122"><a href="#cb2-122" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div style="height:600px; width:100%;">            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="ca19ac05-2646-4642-be58-5ce047995f7e" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("ca19ac05-2646-4642-be58-5ce047995f7e")) {                    Plotly.newPlot(                        "ca19ac05-2646-4642-be58-5ce047995f7e",                        [{"line":{"color":"royalblue","width":2},"mode":"lines","name":"y = x\u00b2","x":{"dtype":"f8","bdata":"AAAAAAAAEMDL\u002fCrzq8wPwJb5VeZXmQ\u002fAYPaA2QNmD8Ar86vMrzIPwPbv1r9b\u002fw7AwOwBswfMDsCL6Syms5gOwFbmV5lfZQ7AIeOCjAsyDsDs361\u002ft\u002f4NwLbc2HJjyw3AgdkDZg+YDcBM1i5Zu2QNwBbTWUxnMQ3A4c+EPxP+DMCszK8yv8oMwHfJ2iVrlwzAQsYFGRdkDMAMwzAMwzAMwNe\u002fW\u002f9u\u002fQvAoryG8hrKC8BsubHlxpYLwDe23NhyYwvAArMHzB4wC8DNrzK\u002fyvwKwJisXbJ2yQrAYqmIpSKWCsAtprOYzmIKwPii3ot6LwrAwp8Jfyb8CcCNnDRy0sgJwFiZX2V+lQnAI5aKWCpiCcDukrVL1i4JwLiP4D6C+wjAg4wLMi7ICMBOiTYl2pQIwBiGYRiGYQjA44KMCzIuCMCuf7f+3foHwHl84vGJxwfARHkN5TWUB8AOdjjY4WAHwNlyY8uNLQfApG+Ovjn6BsBubLmx5cYGwDlp5KSRkwbABGYPmD1gBsDPYjqL6SwGwJpfZX6V+QXAZFyQcUHGBcAvWbtk7ZIFwPpV5leZXwXAxFIRS0UsBcCPTzw+8fgEwFpMZzGdxQTAJUmSJEmSBMDwRb0X9V4EwLpC6AqhKwTAhT8T\u002fkz4A8BQPD7x+MQDwBo5aeSkkQPA5TWU11BeA8CwMr\u002fK\u002fCoDwHsv6r2o9wLARiwVsVTEAsAQKUCkAJECwNsla5esXQLApiKWilgqAsBwH8F9BPcBwDsc7HCwwwHABhkXZFyQAcDRFUJXCF0BwJwSbUq0KQHAZg+YPWD2AMAxDMMwDMMAwPwI7iO4jwDAxgUZF2RcAMCRAkQKECkAwLj+3fp36\u002f+\u002fTvgz4c+E\u002f7\u002fk8YnHJx7\u002fv3jr361\u002ft\u002f6\u002fDuU1lNdQ\u002fr+k3ot6L+r9vzjY4WCHg\u002f2\u002fztE3R98c\u002fb9ky40tN7b8v\u002frE4xOPT\u002fy\u002fkL45+ubo+78kuI\u002fgPoL7v7qx5caWG\u002fu\u002fUKs7re60+r\u002fkpJGTRk76v3qe53me5\u002fm\u002fEJg9YPaA+b+mkZNGThr5vzyL6Syms\u002fi\u002f0IQ\u002fE\u002f5M+L9mfpX5Veb3v\u002fx369+tf\u002fe\u002fkHFBxgUZ978ma5esXbL2v7xk7ZK1S\u002fa\u002fUl5DeQ3l9b\u002foV5lfZX71v3xR70W9F\u002fW\u002fEktFLBWx9L+oRJsSbUr0vzw+8fjE4\u002fO\u002f0jdH3xx9879oMZ3FdBbzv\u002f4q86vMr\u002fK\u002flCRJkiRJ8r8oHp94fOLxv74X9V7Ue\u002fG\u002fVBFLRSwV8b\u002foCqErhK7wv34E9xHcR\u002fC\u002fKPyZ8GfC779U70W9F\u002fXuv4Di8YnHJ+6\u002fqNWdVnda7b\u002fUyEkjJ43svwC89e\u002fWv+u\u002fKK+hvIby6r9Uok2JNiXqv4CV+VXmV+m\u002frIilIpaK6L\u002fYe1HvRb3nvwBv\u002fbv17+a\u002fLGKpiKUi5r9YVVVVVVXlv4BIASIFiOS\u002frDut7rS647\u002fYLlm7ZO3ivwQiBYgUIOK\u002fMBWxVMRS4b9YCF0hdIXgvwj3EdxHcN+\u002fYN1pdafV3b+ww8EOBzvcvwiqGahmoNq\u002fYJBxQcYF2b+4dsnaJWvXvxBdIXSF0NW\u002fYEN5DeU11L+4KdGmRJvSvxAQKUCkANG\u002fwOwBswfMzr9wubHlxpbLvyCGYRiGYci\u002f0FIRS0Usxb+AH8F9BPfBv0DY4WCHg72\u002foHFBxgUZt78AC6ErhK6wv4BIASIFiKS\u002fAO0BswfMjr8ASAEiBYiEP4AfwX0E96E\u002fgOwBswfMrj8AXSF0hdC1P4DDwQ4HO7w\u002fIBWxVMRSwT+ASAEiBYjEP8B7Ue9Fvcc\u002fIK+hvIbyyj+A4vGJxyfOP+AKoSuErtA\u002fkCRJkiRJ0j9APvH4xOPTP+BXmV9lftU\u002fkHFBxgUZ1z8wi+ksprPYP+CkkZNGTto\u002fkL45+ubo2z8w2OFgh4PdP+DxiccnHt8\u002fwAUZF2Rc4D+YEm1KtCnhP3AfwX0E9+E\u002fQCwVsVTE4j8YOWnkpJHjP\u002fBFvRf1XuQ\u002fwFIRS0Us5T+YX2V+lfnlP3BsubHlxuY\u002fQHkN5TWU5z8YhmEYhmHoP+iStUvWLuk\u002fwJ8Jfyb86T+YrF2ydsnqP2i5seXGlus\u002fQMYFGRdk7D8Q01lMZzHtP+jfrX+3\u002fu0\u002fwOwBswfM7j+Q+VXmV5nvPzQD1QxUM\u002fA\u002foAl\u002fJvyZ8D8IEClApADxP3QW01lMZ\u002fE\u002f4Bx9c\u002fTN8T9IIyeNnDTyP7Qp0aZEm\u002fI\u002fHDB7wOwB8z+INiXalGjzP\u002fQ8z\u002fM8z\u002fM\u002fXEN5DeU19D\u002fISSMnjZz0PzBQzUA1A\u002fU\u002fnFZ3Wt1p9T8IXSF0hdD1P3Bjy40tN\u002fY\u002f3Gl1p9Wd9j9IcB\u002fBfQT3P7B2ydola\u002fc\u002fHH1z9M3R9z+Igx0Odjj4P\u002fCJxycen\u002fg\u002fXJBxQcYF+T\u002fElhtbbmz5PzCdxXQW0\u002fk\u002fnKNvjr45+j8EqhmoZqD6P3Cww8EOB\u002fs\u002f2LZt27Zt+z9EvRf1XtT7P7DDwQ4HO\u002fw\u002fGMprKK+h\u002fD+E0BVCVwj9P\u002fDWv1v\u002fbv0\u002fWN1pdafV\u002fT\u002fE4xOPTzz+PzDqvaj3ov4\u002fmPBnwp8J\u002fz8E9xHcR3D\u002fP2z9u\u002fXv1v8\u002f7AGzB8weAEAiBYgUIFIAQFYIXSF0hQBAjAsyLsi4AEDADgc7HOwAQPYR3EdwHwFALBWxVMRSAUBgGIZhGIYBQJYbW25suQFAzB4we8DsAUAAIgWIFCACQDYl2pRoUwJAbCivobyGAkCgK4SuELoCQNYuWbtk7QJACjIuyLggA0BANQPVDFQDQHY42OFghwNAqjut7rS6A0DgPoL7CO4DQBRCVwhdIQRASkUsFbFUBECASAEiBYgEQLRL1i5ZuwRA6k6rO63uBEAgUoBIASIFQFRVVVVVVQVAilgqYqmIBUDAW\u002f9u\u002fbsFQPRe1HtR7wVAKmKpiKUiBkBeZX6V+VUGQJRoU6JNiQZAymsor6G8BkD+bv279e8GQDRy0shJIwdAaHWn1Z1WB0CeeHzi8YkHQNR7Ue9FvQdACH8m\u002fJnwB0A+gvsI7iMIQHSF0BVCVwhAqIilIpaKCEDei3ov6r0IQBSPTzw+8QhASJIkSZIkCUB+lflV5lcJQLKYzmI6iwlA6Jujb46+CUAen3h84vEJQFKiTYk2JQpAiKUilopYCkC8qPei3osKQPKrzK8yvwpAKK+hvIbyCkBcsnbJ2iULQJK1S9YuWQtAyLgg44KMC0D8u\u002fXv1r8LQDK\u002fyvwq8wtAaMKfCX8mDECcxXQW01kMQNLISSMnjQxABsweMHvADEA8z\u002fM8z\u002fMMQHLSyEkjJw1AptWdVndaDUDc2HJjy40NQBDcR3AfwQ1ARt8cfXP0DUB84vGJxycOQLDlxpYbWw5A5uibo2+ODkAc7HCww8EOQFDvRb0X9Q5AhvIaymsoD0C89e\u002fWv1sPQPD4xOMTjw9AJvyZ8GfCD0Ba\u002f279u\u002fUPQEgBIgWIFBBA4oKMCzIuEEB+BPcR3EcQQBiGYRiGYRBAsgfMHjB7EEBOiTYl2pQQQOgKoSuErhBAgowLMi7IEEAcDnY42OEQQLiP4D6C+xBAUhFLRSwVEUDskrVL1i4RQIgUIFKASBFAIpaKWCpiEUC8F\u002fVe1HsRQFiZX2V+lRFA8hrKayivEUCMnDRy0sgRQCgen3h84hFAwp8Jfyb8EUBcIXSF0BUSQPii3ot6LxJAkiRJkiRJEkAsprOYzmISQMgnHp94fBJAYqmIpSKWEkD8KvOrzK8SQJasXbJ2yRJAMi7IuCDjEkDMrzK\u002fyvwSQGYxncV0FhNAArMHzB4wE0CcNHLSyEkTQDa23NhyYxNA0jdH3xx9E0BsubHlxpYTQAY7HOxwsBNAoryG8hrKE0A8PvH4xOMTQNa\u002fW\u002f9u\u002fRNAcEHGBRkXFEAMwzAMwzAUQKZEmxJtShRAQMYFGRdkFEDcR3AfwX0UQHbJ2iVrlxRAEEtFLBWxFECszK8yv8oUQEZOGjlp5BRA4M+EPxP+FEB8Ue9FvRcVQBbTWUxnMRVAsFTEUhFLFUBM1i5Zu2QVQOZXmV9lfhVAgNkDZg+YFUAcW25subEVQLbc2HJjyxVAUF5DeQ3lFUDq361\u002ft\u002f4VQIZhGIZhGBZAIOOCjAsyFkC6ZO2StUsWQFbmV5lfZRZA8GfCnwl\u002fFkCK6Syms5gWQCZrl6xdshZAwOwBswfMFkBabmy5seUWQPbv1r9b\u002fxZAkHFBxgUZF0Aq86vMrzIXQMR0FtNZTBdAYPaA2QNmF0D6d+vfrX8XQJT5VeZXmRdAMHvA7AGzF0DK\u002fCrzq8wXQGR+lflV5hdAAAAAAAAAGEA="},"y":{"dtype":"f8","bdata":"AAAAAAAAMED0oxs7qpkvQKOcwh\u002f5My9AC+r0rezOLkAxjLLlhGouQBKD+8bBBi5Arc7PUaOjLUAFby+GKUEtQBhkGmRU3yxA562Q6yN+LEBxTJIcmB0sQLQ\u002fH\u002fewvStAtYc3e25eK0BxJNuo0P8qQOcVCoDXoSpAGlzEAINEKkAI9wkr0+cpQLHm2v7HiylAFis3fGEwKUA1xB6jn9UoQBGykXOCeyhAqPSP7QkiKED5ixkRNsknQAd4Lt4GcSdA0LjOVHwZJ0BUTvp0lsImQJQ4sT5VbCZAjnfzsbgWJkBFC8HOwMElQLfzGZVtbSVA4jD+BL8ZJUDLwm0etcYkQG+paOFPdCRAz+TuTY8iJEDqdABkc9EjQL9ZnSP8gCNAUJPFjCkxI0CdIXmf++EiQKQEuFtykyJAaDyCwY1FIkDnyNfQTfghQCKquImyqyFAGOAk7LtfIUDHahz4aRQhQDRKn628ySBAXH6tDLR\u002fIEA+B0cVUDYgQLrJ144h2x9Abi44RuxKH0CZPK9QALweQDr0PK5dLh5AUFXhXgSiHUDfX5xi9BYdQOUTbrktjRxAX3FWY7AEHEBTeFVgfH0bQL0oa7CR9xpAnoKXU\u002fByGkD1hdpJmO8ZQMEyNJOJbRlABomkL8TsGEDCiCsfSG0YQPMxyWEV7xdAnIR99ytyF0C8gEjgi\u002fYWQFMmKhw1fBZAYHUiqycDFkDibTGNY4sVQN0PV8LoFBVAT1uTSrefFEA2UOYlzysUQJXuT1QwuRNAazbQ1dpHE0C4J2eqztcSQHvCFNILaRJAswbZTJL7EUBk9LMaYo8RQIyLpTt7JBFAKcytr926EEA+tsx2iVIQQJOTBCL91g9AmQ2d\u002fHkLD0CM2mJ9iUIOQGj6VaQrfA1ANm12cWC4DEDyMsTkJ\u002fcLQJdLP\u002f6BOAtALbfnvW58CkCxdb0j7sIJQCKHwC8ADAlAgevw4aRXCEDKok463KUHQAOt2Tim9gZAKwqS3QJKBkA8unco8p8FQD69ihl0+ARALhPLsIhTBEALvDjuL7EDQNa309FpEQNAiwacWzZ0AkAwqJGLldkBQMSctGGHQQFAQeQE3gusAECvfoIAIxkAQBbYWpKZEf8\u002fqFgLcBL2\u002fT8VfxaasN\u002f8P1dLfBB0zvs\u002fer0801zC+j941Vfiarv5P0yTzT2eufg\u002fAPed5fa89z+PAMnZdMX2P\u002fmvThoY0\u002fU\u002fPQUvp+Dl9D9ZAGqAzv3zP1Oh\u002f6XhGvM\u002fKejvFxo98j\u002fV1DrWd2TxP2Fn4OD6kPA\u002fjz\u002fBb0aF7z8S\u002fHa24fLtP0sE4pXHauw\u002fM1gCDvjs6j\u002fY99cec3npPzLjYsg4EOg\u002fPBqjCkmx5j8DnZjlo1zlP4BrQ1lJEuQ\u002fsoWjZTnS4j+b67gKdJzhPzOdg0j5cOA\u002fDzUHPpKf3j8kx3Ecx3HcP5rwRiyRWNo\u002fhrGGbfBT2D\u002feCTHg5GPWP6L5RYRuiNQ\u002f0oDFWY3B0j9ln69gQQ\u002fRP9qqCDIV484\u002fwUWHBdLQyz9xD9s7uefIPwgIBNXKJ8Y\u002fdi8C0QaRwz+8hdUvbSPBP7MV\u002fOL7vb0\u002fiX33K3KHuT8jQ506PaO1P21m7Q5dEbI\u002frc7PUaOjrT8AjBkRNsmnP7AEuFtyk6I\u002ff3FWY7AEnD9aUOYlzyuUP6VLP\u002f6BOIs\u002fWOQE3gusgD8H1TrWd2RxP5rwRiyRWFo\u002fKM\u002fPUaOjLT9R70YskVgaP1pQ5iXPK1Q\u002fMs7PUaOjbT+IFfzi+719PxwP2zu554g\u002fr4DFWY3Bkj+a8EYskViaP3fruAp0nKE\u002fLxqjCkmxpj9LBOKVx2qsP8XUOtZ3ZLE\u002fNAUvp+DltD9Wk809nrm4P\u002f9+Fpqw37w\u002fQeQE3guswD\u002fDt9PRaRHDPzW6dyjyn8U\u002fgevw4aRXyD+ISz\u002f+gTjLP4TaYn2JQs4\u002fHMytr9260D9zwhTSC2nSPzZQ5iXPK9Q\u002fUnUiqycD1j\u002fuMclhFe\u002fXP\u002fWF2kmY79k\u002fVXFWY7AE3D819DyuXS7eP0EHRxVQNuA\u002fEuAk7Ltf4T+kBLhbcpPiP+F0AGRz0eM\u002f3zD+BL8Z5T+UOLE+VWzmP\u002fKLGRE2yec\u002fEys3fGEw6T\u002fcFQqA16HqP2lMkhyYHew\u002frc7PUaOj7T+XnMIf+TPvPyNbNcNMZ\u002fA\u002f1g3kQsI58T9cZu0OXRHyP8VkUScd7vI\u002fCQkQjALQ8z8gUyk9Dbf0PxpDnTo9o\u002fU\u002f5thrhJKU9j+XFJUaDYv3PyL2GP2shvg\u002ff333K3KH+T\u002fAqjCnXI36P9N9xG5smPs\u002fyvaygqGo\u002fD+dFfzi+739P0Dan4972P4\u002fyUSeiCD4\u002fz+XqvtmdY4AQLCF1S9tIwFAvrPcnve6AUC4NBG0FFUCQJoIc2\u002fE8QJAcC8C0QaRA0Atqb7Y2zIEQN51qIZD1wRAfJW\u002f2j1+BUABCATVyicGQHvNdXXq0wZA2+UUvJyCB0AvUeGo4TMIQHEP2zu55whAmiACdSOeCUC3hFZUIFcKQME72NmvEgtAskWHBdLQC0CYomPXhpEMQGtSbU\u002fOVA1AJFWkbagaDkDSqggyFeMOQGZTmpwUrg9AeKesVtM9EECzziKy5aUQQGGfr2BBDxFAihlTYuZ5EUAmPQ231OURQDwK3l4MUxJAyYDFWY3BEkDJoMOnVzETQERq2EhrohNANd0DPcgUFECZ+UWEbogUQHi\u002fnh5e\u002fRRAzi4ODJdzFUCWR5RMGesVQNoJMeDkYxZAj3XkxvndFkDAiq4AWFkXQGhJj43\u002f1RdAgbGGbfBTGEAWw5SgKtMYQB1+uSauUxlAoOL0\u002f3rVGUCa8EYskVgaQAWor6vw3BpA7AgvfpliG0BKE8Wji+kbQBnHcRzHcRxAZCQ16Ev7HEAmKw8HGoYdQFrb\u002f3gxEh5ACjUHPpKfHkAqOCVWPC4fQMjkWcEvvh9Abp3SP7YnIEAwnYNI+XAgQLHxv\u002frguiBA6pqHVm0FIUDimNpbnlAhQJXruAp0nCFAAJMiY+7oIUAqjxdlDTYiQA\u002fglxDRgyJArIWjZTnSIkAIgDpkRiEjQB\u002fPXAz4cCNA73IKXk7BI0B8a0NZSRIkQMO4B\u002f7oYyRAx1pXTC22JECIUTJEFgklQACdmOWjXCVANz2KMNawJUAmMgclrQUmQNN7D8MoWyZAPBqjCkmxJkBdDcL7DQgnQD1VbJZ3XydA2PGh2oW3J0Ar42LIOBAoQD0pr1+QaShAC8SGoIzDKECQs+mKLR4pQNT31x5zeSlA0JBRXF3VKUCLflZD7DEqQAHB5tMfjypAL1gCDvjsKkAcRKnxdEsrQMGE236WqitAJBqZtVwKLEBEBOKVx2osQBpDth\u002fXyyxAsNYVU4stLUACvwAw5I8tQAv8drbh8i1A04145oNWLkBWdAXAyrouQJGvHUO2Hy9Aiz\u002fBb0aFL0A9JPBFe+svQNcu1WIqKTBA6\u002fV3d+lcMEBhZ+Dg+pAwQDGDDp9exTBAXkkCshT6MEDtubsZHS8xQNXUOtZ3ZDFAHJp\u002f5ySaMUDACYpNJNAxQMUjWgh2BjJAJejvFxo9MkDiVkt8EHQyQAFwbDVZqzJAeTNTQ\u002fTiMkBPof+l4RozQIe5cV0hUzNAGHypabOLM0AH6abKl8QzQFkAaoDO\u002fTNAA8Lyilc3NEALLkHqMnE0QHVEVZ5gqzRAOQUvp+DlNEBacM4EsyA1QN2FM7fXWzVAukVevk6XNUD0r04aGNM1QIzEBMszDzZAhoOA0KFLNkDZ7MEqYog2QIoAydl0xTZAnb6V3dkCN0AKJyg2kUA3QNQ5gOOafjdAAPed5fa8N0CFXoE8pfs3QGhwKuilOjhAriyZ6Ph5OEBMk809nrk4QEikx+eV+ThAol+H5t85OUBexQw6fHo5QHPVV+JquzlA5o9o36v8OUC79D4xPz46QOkD29ckgDpAdb0801zCOkBkIWQj5wQ7QKsvUcjDRztAUOgDwvKKO0BXS3wQdM47QLdYurNHEjxAdRC+q21WPECWcof45Zo8QA9\u002fFpqw3zxA5jVrkM0kPUAgl4XbPGo9QLKiZXv+rz1AolgLcBL2PUDwuHa5eDw+QKHDp1cxgz5AqXieSjzKPkAQ2FqSmRE\u002fQNrh3C5JWT9A\u002fJUkIEuhP0B89DFmn+k\u002fQK9+ggAjGUBATdhOeJ89QEAZB34aRWJAQBcLEOcTh0BAQeQE3gusQECaklz\u002fLNFAQCIWF0t39kBA2240weobQUDBnLRhh0FBQNWflyxNZ0FAG3jdITyNQUCNJYZBVLNBQC2okYuV2UFAAAAAAAAAQkA="},"type":"scatter"},{"marker":{"color":"black","size":10},"mode":"markers+text","name":"Point a","text":["(a, a\u00b2)"],"textposition":"top center","x":[1],"y":[1],"type":"scatter"},{"line":{"color":"red","dash":"dot","width":2},"mode":"lines","name":"Secant line","x":[0.6077677297236319,4.392232270276368],"y":[-0.9611613513818402,17.96116135138184],"type":"scatter"},{"marker":{"color":"red","size":9},"mode":"markers","name":"Second point","x":[4],"y":[16],"type":"scatter"}],                        {"annotations":[{"bgcolor":"white","bordercolor":"white","borderwidth":1,"font":{"color":"blue","size":12,"weight":"bold"},"showarrow":false,"text":"c = 3 second point = (4.0000, 16.0000) Slope = 5.00000","x":0.5,"xanchor":"center","xref":"paper","y":1.08,"yref":"paper"}],"margin":{"t":80,"b":150},"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"title":{"text":"How the slope changes as c approaches 0"},"updatemenus":[{"buttons":[{"args":[null,{"frame":{"duration":1200,"redraw":true},"fromcurrent":true,"transition":{"duration":300}}],"label":"Play","method":"animate"},{"args":[[null],{"frame":{"duration":0,"redraw":false},"mode":"immediate"}],"label":"Pause","method":"animate"}],"showactive":false,"type":"buttons","x":0.1,"y":0.8}],"xaxis":{"range":[-4,6],"title":{"text":"x"}},"yaxis":{"range":[-1.9998994981187304,36.0],"title":{"text":"y"}},"sliders":[{"currentvalue":{"prefix":"c = "},"steps":[{"args":[["3"],{"mode":"immediate","frame":{"duration":300,"redraw":true},"transition":{"duration":300}}],"label":"c=3","method":"animate"},{"args":[["2"],{"mode":"immediate","frame":{"duration":300,"redraw":true},"transition":{"duration":300}}],"label":"c=2","method":"animate"},{"args":[["1"],{"mode":"immediate","frame":{"duration":300,"redraw":true},"transition":{"duration":300}}],"label":"c=1","method":"animate"},{"args":[["0.5"],{"mode":"immediate","frame":{"duration":300,"redraw":true},"transition":{"duration":300}}],"label":"c=0.5","method":"animate"},{"args":[["0.25"],{"mode":"immediate","frame":{"duration":300,"redraw":true},"transition":{"duration":300}}],"label":"c=0.25","method":"animate"},{"args":[["0.1"],{"mode":"immediate","frame":{"duration":300,"redraw":true},"transition":{"duration":300}}],"label":"c=0.1","method":"animate"},{"args":[["0.01"],{"mode":"immediate","frame":{"duration":300,"redraw":true},"transition":{"duration":300}}],"label":"c=0.01","method":"animate"},{"args":[["0.001"],{"mode":"immediate","frame":{"duration":300,"redraw":true},"transition":{"duration":300}}],"label":"c=0.001","method":"animate"},{"args":[["0.0001"],{"mode":"immediate","frame":{"duration":300,"redraw":true},"transition":{"duration":300}}],"label":"c=0.0001","method":"animate"}]}],"height":600},                        {"responsive": true}                    ).then(function(){
+                            Plotly.addFrames('ca19ac05-2646-4642-be58-5ce047995f7e', [{"data":[{"line":{"color":"red","dash":"dot","width":2},"mode":"lines","x":[0.6077677297236319,4.392232270276368],"y":[-0.9611613513818402,17.96116135138184],"type":"scatter"},{"marker":{"color":"red","size":9},"mode":"markers","x":[4],"y":[16],"type":"scatter"}],"layout":{"annotations":[{"bgcolor":"white","bordercolor":"white","borderwidth":1,"font":{"color":"blue","size":12,"weight":"bold"},"showarrow":false,"text":"c = 3 second point = (4.0000, 16.0000) Slope = 5.00000","x":0.5,"xanchor":"center","xref":"paper","y":1.08,"yref":"paper"}]},"name":"3","traces":[2,3]},{"data":[{"line":{"color":"red","dash":"dot","width":2},"mode":"lines","x":[0.5149287499273341,3.485071250072666],"y":[-0.9402850002906638,10.940285000290665],"type":"scatter"},{"marker":{"color":"red","size":9},"mode":"markers","x":[3],"y":[9],"type":"scatter"}],"layout":{"annotations":[{"bgcolor":"white","bordercolor":"white","borderwidth":1,"font":{"color":"blue","size":12,"weight":"bold"},"showarrow":false,"text":"c = 2 second point = (3.0000, 9.0000) Slope = 4.00000","x":0.5,"xanchor":"center","xref":"paper","y":1.08,"yref":"paper"}]},"name":"2","traces":[2,3]},{"data":[{"line":{"color":"red","dash":"dot","width":2},"mode":"lines","x":[0.3675444679663241,2.632455532033676],"y":[-0.8973665961010275,5.897366596101028],"type":"scatter"},{"marker":{"color":"red","size":9},"mode":"markers","x":[2],"y":[4],"type":"scatter"}],"layout":{"annotations":[{"bgcolor":"white","bordercolor":"white","borderwidth":1,"font":{"color":"blue","size":12,"weight":"bold"},"showarrow":false,"text":"c = 1 second point = (2.0000, 4.0000) Slope = 3.00000","x":0.5,"xanchor":"center","xref":"paper","y":1.08,"yref":"paper"}]},"name":"1","traces":[2,3]},{"data":[{"line":{"color":"red","dash":"dot","width":2},"mode":"lines","x":[0.25721864729179256,2.2427813527082074],"y":[-0.8569533817705188,4.106953381770519],"type":"scatter"},{"marker":{"color":"red","size":9},"mode":"markers","x":[1.5],"y":[2.25],"type":"scatter"}],"layout":{"annotations":[{"bgcolor":"white","bordercolor":"white","borderwidth":1,"font":{"color":"blue","size":12,"weight":"bold"},"showarrow":false,"text":"c = 0.5 second point = (1.5000, 2.2500) Slope = 2.50000","x":0.5,"xanchor":"center","xref":"paper","y":1.08,"yref":"paper"}]},"name":"0.5","traces":[2,3]},{"data":[{"line":{"color":"red","dash":"dot","width":2},"mode":"lines","x":[0.18772306789310467,2.0622769321068954],"y":[-0.8276230972405145,3.3901230972405143],"type":"scatter"},{"marker":{"color":"red","size":9},"mode":"markers","x":[1.25],"y":[1.5625],"type":"scatter"}],"layout":{"annotations":[{"bgcolor":"white","bordercolor":"white","borderwidth":1,"font":{"color":"blue","size":12,"weight":"bold"},"showarrow":false,"text":"c = 0.25 second point = (1.2500, 1.5625) Slope = 2.25000","x":0.5,"xanchor":"center","xref":"paper","y":1.08,"yref":"paper"}]},"name":"0.25","traces":[2,3]},{"data":[{"line":{"color":"red","dash":"dot","width":2},"mode":"lines","x":[0.1401328392153044,1.9598671607846958],"y":[-0.8057210376478607,3.015721037647861],"type":"scatter"},{"marker":{"color":"red","size":9},"mode":"markers","x":[1.1],"y":[1.2100000000000002],"type":"scatter"}],"layout":{"annotations":[{"bgcolor":"white","bordercolor":"white","borderwidth":1,"font":{"color":"blue","size":12,"weight":"bold"},"showarrow":false,"text":"c = 0.1 second point = (1.1000, 1.2100) Slope = 2.10000","x":0.5,"xanchor":"center","xref":"paper","y":1.08,"yref":"paper"}]},"name":"0.1","traces":[2,3]},{"data":[{"line":{"color":"red","dash":"dot","width":2},"mode":"lines","x":[0.10913803149776746,1.9008619685022325],"y":[-0.7906325566894865,2.8107325566894863],"type":"scatter"},{"marker":{"color":"red","size":9},"mode":"markers","x":[1.01],"y":[1.0201],"type":"scatter"}],"layout":{"annotations":[{"bgcolor":"white","bordercolor":"white","borderwidth":1,"font":{"color":"blue","size":12,"weight":"bold"},"showarrow":false,"text":"c = 0.01 second point = (1.0100, 1.0201) Slope = 2.01000","x":0.5,"xanchor":"center","xref":"paper","y":1.08,"yref":"paper"}]},"name":"0.01","traces":[2,3]},{"data":[{"line":{"color":"red","dash":"dot","width":2},"mode":"lines","x":[0.10593045469241869,1.8950695453075812],"y":[-0.7890331601603966,2.7910341601603963],"type":"scatter"},{"marker":{"color":"red","size":9},"mode":"markers","x":[1.001],"y":[1.0020009999999997],"type":"scatter"}],"layout":{"annotations":[{"bgcolor":"white","bordercolor":"white","borderwidth":1,"font":{"color":"blue","size":12,"weight":"bold"},"showarrow":false,"text":"c = 0.001 second point = (1.0010, 1.0020) Slope = 2.00100","x":0.5,"xanchor":"center","xref":"paper","y":1.08,"yref":"paper"}]},"name":"0.001","traces":[2,3]},{"data":[{"line":{"color":"red","dash":"dot","width":2},"mode":"lines","x":[0.10560858483534441,1.8944914151646555],"y":[-0.7888722694702841,2.7890722794702842],"type":"scatter"},{"marker":{"color":"red","size":9},"mode":"markers","x":[1.0001],"y":[1.00020001],"type":"scatter"}],"layout":{"annotations":[{"bgcolor":"white","bordercolor":"white","borderwidth":1,"font":{"color":"blue","size":12,"weight":"bold"},"showarrow":false,"text":"c = 0.0001 second point = (1.0001, 1.0002) Slope = 2.00010","x":0.5,"xanchor":"center","xref":"paper","y":1.08,"yref":"paper"}]},"name":"0.0001","traces":[2,3]}]);
+                        }).then(function(){
+                            
+var gd = document.getElementById('ca19ac05-2646-4642-be58-5ce047995f7e');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+<p><br> We can see that when <span class="math inline">\(c\)</span> is very small, the second point is very close to the <span class="math inline">\((x = 1, y = 1)\)</span> and the line through them does indeed show the steepness of the curve at <span class="math inline">\((x = 1, y = 1)\)</span>. So we can still use the slope of lines to estimate the slope of curve, only if we take a very small step.</p>
+<p>Also, when c is approximately 0, - <span class="math inline">\(Slope = 2a + c \approx 2a\)</span> - The line joining the 2 very close points on the curve resembles the <strong>tangent of the curve at <span class="math inline">\((x = 1, y = 1)\)</span></strong> - <strong>As c tends to 0 (extremely close to zero), the second point slides into the first point, and the chord becomes the tangent line, the line whose slope matches the curve’s steepness at that point.</strong></p>
+<p>So when <span class="math inline">\(c\)</span> is small, slope only depends on selected value of <span class="math inline">\(x\)</span>.</p>
+</section>
+<section id="understanding-limits" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-limits">Understanding limits</h2>
+<p>A limit asks: what value does an expression approach as one of its parts gets closer and closer to some target, without necessarily ever reaching it? <br> In our case, the expression is the slope <span class="math inline">\(2a+c\)</span>, and the part changing is <span class="math inline">\(c\)</span>, which we are pushing closer and closer to <span class="math inline">\(0\)</span> (but never quite letting it equal <span class="math inline">\(0\)</span>, since <span class="math inline">\(c=0\)</span> would mean the second point isn’t really a second point at all). <br> <strong>As <span class="math inline">\(c\)</span> shrinks <span class="math inline">\(1, 0.1, 0.01, 0.001, 0.0001, ...\)</span> the value of <span class="math inline">\(2a+c\)</span> doesn’t jump around; it settles down and gets arbitrarily close to a single fixed number: <span class="math inline">\(2a\)</span></strong></p>
+</section>
+<section id="understanding-derivatives" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-derivatives">Understanding Derivatives</h2>
+<p>We have defined slope as: <span class="math inline">\(Slope = \frac{\Delta y}{\Delta x}\)</span></p>
+<p>Note: - <span class="math inline">\(\Delta x\)</span> is simply the increase in the value of <span class="math inline">\(x\)</span>, i.e., from <span class="math inline">\(x = a\)</span> to <span class="math inline">\(x = a + c\)</span>. <span class="math inline">\(\Delta x = a + c - a = c\)</span> - <span class="math inline">\(\Delta y\)</span> is the increase in the function value (i.e., the value of <span class="math inline">\(y\)</span>) as we increase the value of x by a little. This can also be written as <span class="math inline">\(f(a + c) - f(a)\)</span></p>
+<p>So, - <span class="math inline">\(Slope = \frac{\Delta y}{\Delta x} = \frac{f(a + c) - f(a)}{c}\)</span> - And we want <span class="math inline">\(c\)</span> to be very close to zero. In the language of limits, c tends to zero or <span class="math inline">\(c \to 0\)</span></p>
+<p><strong>This is the exact definition of derivatives!</strong></p>
+<p>Definition: For a function <span class="math inline">\(y = f(x)\)</span>, the derivative at <span class="math inline">\(x = a\)</span> is: <br> Derivative of a function <span class="math inline">\(y\)</span> defined as <span class="math inline">\(y = f(x)\)</span> then the derivative of the function at <span class="math inline">\(x = a\)</span>: <span class="math inline">\(\displaystyle f'(a) = {\textstyle {\frac {df}{dx}}(a)} = \lim _{h\to 0}{\frac {f(a+h)-f(a)}{h}}\)</span></p>
+<p>So, if we consider a point <span class="math inline">\((P1)\)</span> on the curve and another point <span class="math inline">\((P2)\)</span> very close to it, the slope of the line passing through them <strong>closely approximates the derivative (or gradient or steepness) of the curve</strong> at point <span class="math inline">\(P1\)</span> and this approximation gets exact as <span class="math inline">\(P2\)</span> approaches <span class="math inline">\(P1\)</span>. In that limit, the line becomes the tangent line at point <span class="math inline">\(P1\)</span>.</p>
+<p><strong><span class="glow-blue">Now that we have what we want, we can calculate the steepness of a curve at any point on the curve.</span></strong> <br></p>
+<div class="callout callout-style-default callout-tip callout-titled" title="## Main Take away">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Main Take away
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Consider the function <span class="math inline">\(y = x^2\)</span> and we want to calculate the steepness of the curve at <span class="math inline">\((x = 1, y = 1^2) = (1,1)\)</span></li>
+<li>Let’s calculate the derivative.
+<ul>
+<li>Consider a point <span class="math inline">\(P1: (x = a, y = a^2)\)</span> on the curve.</li>
+<li>Now we nudge <span class="math inline">\(a\)</span> slightly to obtain the second point, <span class="math inline">\(P2: (x = a + c, y = (a + c)^2)\)</span></li>
+<li><span class="math inline">\(\Delta x = a + c - a = c\)</span></li>
+<li><span class="math inline">\(\Delta y = (a + c)^2 - a^2 = c(2a + c)\)</span></li>
+<li><strong>Therefore, <span class="math inline">\(f'(a) = \lim _{c\to 0}\frac{c(2a + c)}{c} = \lim _{c\to 0} (2a + c) = 2a\)</span></strong></li>
+<li><strong>This means that at any point on the curve <span class="math inline">\(y = x^2\)</span>, the steepness of the curve at <span class="math inline">\(x=a\)</span> is equal to <span class="math inline">\(2a\)</span></strong></li>
+</ul></li>
+<li>For our point, gradient at <span class="math inline">\(a = 1\)</span> is equal to <span class="math inline">\(2 * 1  = 2\)</span> Let’s plot a line of slope 2 going through point <span class="math inline">\((1,1)\)</span> to understand the steepness at that point on the curve. The line is the tangent and the steepness of the line indicates how steep the curve is at <span class="math inline">\((1,1)\)</span>.</li>
+</ul>
+</div>
+</div>
+<div id="584f8596" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Point of tangency</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>x0, y0 <span class="op">=</span> <span class="dv">1</span>, <span class="dv">1</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>slope <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Curve</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>x_vals <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">400</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>y_vals <span class="op">=</span> x_vals<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Tangent line: y - y0 = slope * (x - x0)  =&gt;  y = y0 + slope*(x - x0)</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>x_line <span class="op">=</span> np.linspace(x0 <span class="op">-</span> <span class="dv">2</span>, x0 <span class="op">+</span> <span class="dv">2</span>, <span class="dv">100</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>y_line <span class="op">=</span> y0 <span class="op">+</span> slope <span class="op">*</span> (x_line <span class="op">-</span> x0)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure()</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot y = x^2</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_vals, y<span class="op">=</span>y_vals,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"y = x²"</span>,</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"royalblue"</span>, width<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot tangent line</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_line, y<span class="op">=</span>y_line,</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"Tangent line (slope = </span><span class="sc">{</span>slope<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, width<span class="op">=</span><span class="dv">2</span>, dash<span class="op">=</span><span class="st">"dash"</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Mark the point of tangency</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>[x0], y<span class="op">=</span>[y0],</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"markers+text"</span>,</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"black"</span>, size<span class="op">=</span><span class="dv">10</span>),</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span>[<span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>],</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    textposition<span class="op">=</span><span class="st">"bottom right"</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Tangent line at (1,1) on y = x² — slope = 2"</span>,</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    xaxis_title<span class="op">=</span><span class="st">"x"</span>,</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    yaxis_title<span class="op">=</span><span class="st">"y"</span>,</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    template<span class="op">=</span><span class="st">"plotly_white"</span>,</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    xaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">6</span>, <span class="dv">6</span>]),</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    yaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">3</span>, <span class="dv">16</span>]),</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span><span class="bu">dict</span>(title<span class="op">=</span><span class="st">"Legend"</span>),</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">350</span>,</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">=</span><span class="bu">dict</span>(t<span class="op">=</span><span class="dv">50</span>, b<span class="op">=</span><span class="dv">70</span>)</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div style="height:350px; width:100%;">            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="15302462-5428-4952-8f60-07aa08dffe6c" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("15302462-5428-4952-8f60-07aa08dffe6c")) {                    Plotly.newPlot(                        "15302462-5428-4952-8f60-07aa08dffe6c",                        [{"line":{"color":"royalblue","width":2},"mode":"lines","name":"y = x\u00b2","x":{"dtype":"f8","bdata":"AAAAAAAAFMBlfpX5VeYTwMv8KvOrzBPAMHvA7AGzE8CW+VXmV5kTwPt369+tfxPAYPaA2QNmE8DGdBbTWUwTwCvzq8yvMhPAkHFBxgUZE8D279a\u002fW\u002f8SwFtubLmx5RLAwOwBswfMEsAma5esXbISwIvpLKazmBLA8WfCnwl\u002fEsBW5leZX2USwLtk7ZK1SxLAIeOCjAsyEsCGYRiGYRgSwOzfrX+3\u002fhHAUV5DeQ3lEcC23NhyY8sRwBxbbmy5sRHAgdkDZg+YEcDmV5lfZX4RwEzWLlm7ZBHAsVTEUhFLEcAW01lMZzERwHxR70W9FxHA4c+EPxP+EMBHTho5aeQQwKzMrzK\u002fyhDAEUtFLBWxEMB3ydola5cQwNxHcB\u002fBfRDAQsYFGRdkEMCnRJsSbUoQwAzDMAzDMBDAckHGBRkXEMCuf7f+3foPwHl84vGJxw\u002fARHkN5TWUD8AOdjjY4WAPwNlyY8uNLQ\u002fApG+Ovjn6DsBubLmx5cYOwDlp5KSRkw7ABGYPmD1gDsDPYjqL6SwOwJpfZX6V+Q3AZFyQcUHGDcAvWbtk7ZINwPpV5leZXw3AxFIRS0UsDcCPTzw+8fgMwFpMZzGdxQzAJUmSJEmSDMDwRb0X9V4MwLpC6AqhKwzAhT8T\u002fkz4C8BQPD7x+MQLwBo5aeSkkQvA5TWU11BeC8CwMr\u002fK\u002fCoLwHsv6r2o9wrARiwVsVTECsAQKUCkAJEKwNsla5esXQrApiKWilgqCsBwH8F9BPcJwDsc7HCwwwnABhkXZFyQCcDRFUJXCF0JwJwSbUq0KQnAZg+YPWD2CMAxDMMwDMMIwPwI7iO4jwjAxgUZF2RcCMCRAkQKECkIwFz\u002fbv279QfAJ\u002fyZ8GfCB8Dy+MTjE48HwLz179a\u002fWwfAh\u002fIaymsoB8BS70W9F\u002fUGwBzscLDDwQbA5+ibo2+OBsCy5caWG1sGwH3i8YnHJwbASN8cfXP0BcAS3EdwH8EFwN3YcmPLjQXAqNWdVndaBcBy0shJIycFwD3P8zzP8wTACMweMHvABMDTyEkjJ40EwJ7FdBbTWQTAaMKfCX8mBMAzv8r8KvMDwP679e\u002fWvwPAyLgg44KMA8CTtUvWLlkDwF6ydsnaJQPAKa+hvIbyAsD0q8yvMr8CwL6o96LeiwLAiaUilopYAsBUok2JNiUCwB6feHzi8QHA6Zujb46+AcC0mM5iOosBwH+V+VXmVwHASpIkSZIkAcAUj088PvEAwN+Lei\u002fqvQDAqoilIpaKAMB0hdAVQlcAwD+C+wjuIwDAFP5M+DPh\u002f7+q96Lei3r\u002fv0Dx+MTjE\u002f+\u002f1OpOqzut\u002fr9q5KSRk0b+vwDe+nfr3\u002f2\u002flNdQXkN5\u002fb8q0aZEmxL9v8DK\u002fCrzq\u002fy\u002fVsRSEUtF\u002fL\u002fsvaj3ot77v4C3\u002ft36d\u002fu\u002fFrFUxFIR+7+sqqqqqqr6v0CkAJECRPq\u002f1p1Wd1rd+b9sl6xdsnb5vwKRAkQKEPm\u002fmIpYKmKp+L8shK4QukL4v8J9BPcR3Pe\u002fWHda3Wl197\u002fscLDDwQ73v4JqBqoZqPa\u002fGGRckHFB9r+uXbJ2ydr1v0RXCF0hdPW\u002f2FBeQ3kN9b9uSrQp0ab0vwREChApQPS\u002fmD1g9oDZ878uN7bc2HLzv8QwDMMwDPO\u002fWipiqYil8r\u002fwI7iP4D7yv4QdDnY42PG\u002fGhdkXJBx8b+wELpC6Arxv0QKEClApPC\u002f2gNmD5g98L\u002fg+nfr363vvwjuI7iP4O6\u002fOOHPhD8T7r9g1HtR70Xtv5DHJx6feOy\u002fuLrT6k6r67\u002fgrX+3\u002ft3qvxChK4SuEOq\u002fOJTXUF5D6b9gh4MdDnbov5B6L+q9qOe\u002fuG3btm3b5r\u002fgYIeDHQ7mvxBUM1DNQOW\u002fOEffHH1z5L9oOovpLKbjv5AtN7bc2OK\u002fuCDjgowL4r\u002foE49PPD7hvxAHOxzscOC\u002fgPTN0TdH37\u002fQ2iVrl6zdvyDBfQT3Edy\u002fgKfVnVZ32r\u002fQjS03ttzYvyB0hdAVQte\u002fgFrdaXWn1b\u002fQQDUD1QzUvyAnjZw0ctK\u002fgA3lNZTX0L+g53me53nOv2C0KdGmRMu\u002fAIHZA2YPyL+gTYk2JdrEv2AaOWnkpMG\u002fAM7RN0ffvL+AZzGdxXS2v8AAkQJECrC\u002fADThz4Q\u002fo78AnIFqBqqJvwCagWoGqok\u002fADThz4Q\u002foz+AAJECRAqwP0BnMZ3FdLY\u002fAM7RN0ffvD9AGjlp5KTBP6BNiTYl2sQ\u002f4IDZA2YPyD9AtCnRpkTLP6DneZ7nec4\u002fcA3lNZTX0D8gJ42cNHLSP8BANQPVDNQ\u002fcFrdaXWn1T8gdIXQFULXP8CNLTe23Ng\u002fcKfVnVZ32j8gwX0E9xHcP8DaJWuXrN0\u002fcPTN0TdH3z8QBzsc7HDgP+ATj088PuE\u002fuCDjgowL4j+ILTe23NjiP2A6i+kspuM\u002fOEffHH1z5D8IVDNQzUDlP+Bgh4MdDuY\u002fsG3btm3b5j+Iei\u002fqvajnP2CHgx0Odug\u002fMJTXUF5D6T8IoSuErhDqP+Ctf7f+3eo\u002fsLrT6k6r6z+Ixycen3jsP2DUe1HvRe0\u002fMOHPhD8T7j8I7iO4j+DuP9j6d+vfre8\u002f2ANmD5g98D9EChApQKTwP6wQukLoCvE\u002fGBdkXJBx8T+AHQ52ONjxP+wjuI\u002fgPvI\u002fWCpiqYil8j\u002fAMAzDMAzzPyw3ttzYcvM\u002fmD1g9oDZ8z8ARAoQKUD0P2xKtCnRpvQ\u002f2FBeQ3kN9T9AVwhdIXT1P6xdsnbJ2vU\u002fFGRckHFB9j+AagaqGaj2P+xwsMPBDvc\u002fVHda3Wl19z\u002fAfQT3Edz3PyiErhC6Qvg\u002flIpYKmKp+D8AkQJEChD5P2iXrF2ydvk\u002f1J1Wd1rd+T9ApACRAkT6P6iqqqqqqvo\u002fFLFUxFIR+z+At\u002f7d+nf7P+i9qPei3vs\u002fVMRSEUtF\u002fD+8yvwq86v8PyjRpkSbEv0\u002flNdQXkN5\u002fT\u002f83fp369\u002f9P2jkpJGTRv4\u002f0OpOqzut\u002fj888fjE4xP\u002fP6j3ot6Lev8\u002fEP5M+DPh\u002fz8+gvsI7iMAQHSF0BVCVwBAqIilIpaKAEDei3ov6r0AQBSPTzw+8QBASJIkSZIkAUB+lflV5lcBQLKYzmI6iwFA6Jujb46+AUAen3h84vEBQFKiTYk2JQJAiKUilopYAkC8qPei3osCQPKrzK8yvwJAKK+hvIbyAkBcsnbJ2iUDQJK1S9YuWQNAyLgg44KMA0D8u\u002fXv1r8DQDK\u002fyvwq8wNAaMKfCX8mBECcxXQW01kEQNLISSMnjQRABsweMHvABEA8z\u002fM8z\u002fMEQHLSyEkjJwVAptWdVndaBUDc2HJjy40FQBDcR3AfwQVARt8cfXP0BUB84vGJxycGQLDlxpYbWwZA5uibo2+OBkAc7HCww8EGQFDvRb0X9QZAhvIaymsoB0C89e\u002fWv1sHQPD4xOMTjwdAJvyZ8GfCB0Ba\u002f279u\u002fUHQJACRAoQKQhAxAUZF2RcCED8CO4juI8IQDAMwzAMwwhAZA+YPWD2CECcEm1KtCkJQNAVQlcIXQlABBkXZFyQCUA4HOxwsMMJQHAfwX0E9wlApCKWilgqCkDYJWuXrF0KQBApQKQAkQpARCwVsVTECkB4L+q9qPcKQLAyv8r8KgtA5DWU11BeC0AYOWnkpJELQFA8PvH4xAtAhD8T\u002fkz4C0C4QugKoSsMQPBFvRf1XgxAJEmSJEmSDEBYTGcxncUMQJBPPD7x+AxAxFIRS0UsDUD4VeZXmV8NQCxZu2Ttkg1AZFyQcUHGDUCYX2V+lfkNQMxiOovpLA5ABGYPmD1gDkA4aeSkkZMOQGxsubHlxg5ApG+Ovjn6DkDYcmPLjS0PQAx2ONjhYA9ARHkN5TWUD0B4fOLxiccPQKx\u002ft\u002f7d+g9AcEHGBRkXEEAMwzAMwzAQQKZEmxJtShBAQMYFGRdkEEDcR3AfwX0QQHbJ2iVrlxBAEEtFLBWxEECszK8yv8oQQEZOGjlp5BBA4M+EPxP+EEB8Ue9FvRcRQBbTWUxnMRFAsFTEUhFLEUBM1i5Zu2QRQOZXmV9lfhFAgNkDZg+YEUAcW25subERQLbc2HJjyxFAUF5DeQ3lEUDq361\u002ft\u002f4RQIZhGIZhGBJAIOOCjAsyEkC6ZO2StUsSQFbmV5lfZRJA8GfCnwl\u002fEkCK6Syms5gSQCZrl6xdshJAwOwBswfMEkBabmy5seUSQPbv1r9b\u002fxJAkHFBxgUZE0Aq86vMrzITQMR0FtNZTBNAYPaA2QNmE0D6d+vfrX8TQJT5VeZXmRNAMHvA7AGzE0DK\u002fCrzq8wTQGR+lflV5hNAAAAAAAAAFEA="},"y":{"dtype":"f8","bdata":"AAAAAAAAOUArkVgaAMA4QLfMdolSgDhAnrJaTfdAOEDkQgRm7gE4QId9c9M3wzdAhmKoldOEN0Dm8aKswUY3QKErYxgCCTdAug\u002fp2JTLNkAznjTueY42QAjXRVixUTZAOrocFzsVNkDMR7kqF9k1QLl\u002fG5NFnTVABmJDUMZhNUCv7jBimSY1QLUl5Mi+6zRAHAddhDaxNEDekpuUAHc0QP\u002fIn\u002fkcPTRAfKlps4sDNEBXNPnBTMozQJJpTiVgkTNAKElp3cVYM0Ac00nqfSAzQHAH8EuI6DJAH+ZbAuWwMkAsb40NlHkyQJmihG2VQjJAYoBBIukLMkCKCMQrj9UxQA47DIqHnzFA7xcaPdJpMUAwn+1EbzQxQM3QhqFe\u002fzBAyqzlUqDKMEAiMwpZNJYwQNhj9LMaYjBA7j6kY1MuMEC+iDPQvPUvQF7oqYJ3jy9Aupyr3tYpL0DOpTjk2sQuQKEDUZODYC5ALrb069D8LUB1vSPuwpktQHkZ3plZNy1AOcoj75TVLEC0z\u002fTtdHQsQOopUZb5EyxA2tg46CK0K0CH3Kvj8FQrQPA0qohj9ipAEuIz13qYKkDx40jPNjsqQIs66XCX3ilA4eUUvJyCKUDz5cuwRicpQL46Dk+VzChARuTblohyKECJ4jSIIBkoQIY1GSNdwCdAQN2IZz5oJ0C22YNVxBAnQOcqCu3uuSZA09AbLr5jJkB5y7gYMg4mQNwa4axKuSVA+76U6gdlJUDTt9PRaRElQGgFnmJwviRAuKfznBtsJEDEntSAaxokQIzqQA5gySNADYs4Rfl4I0BLgLslNykjQETKya8Z2iJA92hj46CLIkBnXIjAzD0iQJOkOEed8CFAekF0dxKkIUAcMztRLFghQHh5jdTqDCFAkRRrAU7CIEBlBNTXVXggQPRIyFcCLyBAfsSPAqfMH0CKoKWokjwfQA4m0qHHrR5ACFUV7kUgHkB3LW+NDZQdQF+v338eCR1AvdpmxXh\u002fHECQrwReHPcbQNwtuUkJcBtAn1WEiD\u002fqGkDZJmYav2UaQImhXv+H4hlArcVtN5pgGUBLk5PC9d8YQGAK0KCaYBhA6Soj0ojiF0Dr9IxWwGUXQGNoDS5B6hZAU4WkWAtwFkC5S1LWHvcVQJS7Fqd7fxVA6NTxyiEJFUCyl+NBEZQUQPED7AtKIBRAqRkLKcytE0DY2ECZlzwTQH1BjVyszBJAmVPwcgpeEkAqD2rcsfARQDR0+piihBFAtIKhqNwZEUCpOl8LYLAQQBecM8EsSBBA+E09lIXCD0CvtkBMRPcOQFNycaqVLg5A4YDPrnloDUBg4lpZ8KQMQM2WE6r54wtAI575oJUlC0Br+Aw+xGkKQKClTYGFsAlAw6W7atn5CEDT+Fb6v0UIQM2eHzA5lAdAuJcVDEXlBkCQ4ziO4zgGQFOCibYUjwVAB3QHhdjnBECouLL5LkMEQDZQixQYoQNAsjqR1ZMBA0AZeMQ8omQCQHAIJUpDygFAtOuy\u002fXYyAUDjIW5XPZ0AQAKrVleWCgBAHw7Z+gP1\u002fj8UbF+TANr9P+NvQHgixPw\u002fiRl8qWmz+z8OaRIn1qf6P29eA\u002fFnofk\u002fpflOBx+g+D+8OvVp+6P3P64h9hj9rPY\u002feq5RFCS79T8h4QdccM70P5+5GPDh5vM\u002f\u002fTeE0HgE8z81XEr9NCfyP0Qma3YWT\u002fE\u002fMpbmOx188D\u002f3V3mbklzvPzjP2lc1y+0\u002fPpLxrCJE7D\u002froL2aWsfqP1z7PiHdVOk\u002fdaF1QKrs5z9Fk2H4wY7mP9fQAkkkO+U\u002fE1pZMtHx4z8FL2W0yLLiP7lPJs8KfuE\u002fF7ycgpdT4D9W6JCd3WbePwDwUmchO9w\u002fAY9\u002fYvoj2j+CxRaPaCHYP1uTGO1rM9Y\u002foPiEfARa1D9k9Vs9MpXSP4KJnS\u002f15NA\u002fOGqTppqSzj8l8MBQdYTLP+ukw116n8g\u002fpYibzanjxT8bm0igA1HDP2vcytWH58A\u002fU5lE3GxOvT9U153SHiC5PwdzoY4lRLU\u002fjmxPEIG6sT9Eh0+vYgatPwjxVMlsPKc\u002f9BWvbiAXoj+I7Ls++yybPzgkw7YIdZM\u002fvKTnitIMij\u002fm3Terc4R\u002fP5JMRpuOFHA\u002filnql9cnVz8tbpdqMZUkP\u002fdql2oxlSQ\u002filnql9cnVz8STEabjhRwPzLdN6tzhH8\u002fvKTnitIMij\u002fyI8O2CHWTP4jsuz77LJs\u002fxBWvbiAXoj\u002fS8FTJbDynP0SHT69iBq0\u002fbGxPEIG6sT8Hc6GOJUS1PyzXndIeILk\u002fKJlE3GxOvT9r3MrVh+fAPwKbSKADUcM\u002fioibzanjxT\u002frpMNdep\u002fIPwjwwFB1hMs\u002fGWqTppqSzj+CiZ0v9eTQP1P1Wz0yldI\u002foPiEfARa1D9IkxjtazPWP27FFo9oIdg\u002fAY9\u002fYvoj2j\u002fr71JnITvcP1bokJ3dZt4\u002fC7ycgpdT4D+tTybPCn7hPwUvZbTIsuI\u002fBlpZMtHx4z\u002fK0AJJJDvlP0WTYfjBjuY\u002faKF1QKrs5z9O+z4h3VTpP+ugvZpax+o\u002fL5LxrCJE7D84z9pXNcvtP+hXeZuSXO8\u002fLpbmOx188D9EJmt2Fk\u002fxPy1cSv00J\u002fI\u002f+DeE0HgE8z+WuRjw4ebzPxjhB1xwzvQ\u002fda5RFCS79T+kIfYY\u002faz2P7c69Wn7o\u002fc\u002fpflOBx+g+D9lXgPxZ6H5PwlpEifWp\u002fo\u002fiRl8qWmz+z\u002fYb0B4IsT8Pw5sX5MA2v0\u002fFA7Z+gP1\u002fj8Aq1ZXlgoAQOMhblc9nQBAruuy\u002fXYyAUBtCCVKQ8oBQBN4xDyiZAJArDqR1ZMBA0AzUIsUGKEDQKG4svkuQwRABHQHhdjnBEBTgom2FI8FQIrjOI7jOAZAtJcVDEXlBkDNnh8wOZQHQMz4Vvq\u002fRQhAv6W7atn5CECZpU2BhbAJQGf4DD7EaQpAI575oJUlC0DFlhOq+eMLQFziWlnwpAxA2YDPrnloDUBLcnGqlS4OQKu2QExE9w5A8E09lIXCD0AVnDPBLEgQQKk6XwtgsBBAsIKhqNwZEUAydPqYooQRQCoPatyx8BFAlVPwcgpeEkB7QY1crMwSQNPYQJmXPBNApxkLKcytE0DxA+wLSiAUQK6X40ERlBRA5dTxyiEJFUCPuxane38VQLRLUtYe9xVAUYWkWAtwFkBfaA0uQeoWQOj0jFbAZRdA6Soj0ojiF0BbCtCgmmAYQEmTk8L13xhArcVtN5pgGUCEoV7\u002fh+IZQNYmZhq\u002fZRpAmlWEiD\u002fqGkDaLblJCXAbQJCvBF4c9xtAuNpmxXh\u002fHEBcr99\u002fHgkdQHEtb40NlB1AA1UV7kUgHkALJtKhx60eQIWgpaiSPB9Ae8SPAqfMH0D0SMhXAi8gQGME1NdVeCBAkBRrAU7CIEB4eY3U6gwhQBkzO1EsWCFAeEF0dxKkIUCQpDhHnfAhQGZciMDMPSJA9Ghj46CLIkBEysmvGdoiQEmAuyU3KSNACos4Rfl4I0CM6kAOYMkjQMOe1IBrGiRAtafznBtsJEBjBZ5icL4kQNO309FpESVA976U6gdlJUDXGuGsSrklQHnLuBgyDiZA0NAbLr5jJkDiKgrt7rkmQLbZg1XEECdAP92IZz5oJ0CDNRkjXcAnQIniNIggGShAROTblohyKEC6Og5PlcwoQPPly7BGJylA4OUUvJyCKUCIOulwl94pQPPjSM82OypAEuIz13qYKkDsNKqIY\u002fYqQILcq+PwVCtA2tg46CK0K0DmKVGW+RMsQK7P9O10dCxAOcoj75TVLEB3Gd6ZWTctQHG9I+7CmS1ALrb069D8LUCfA1GTg2AuQMqlOOTaxC5Aupyr3tYpL0Bc6KmCd48vQLqIM9C89S9A6j6kY1MuMEDYY\u002fSzGmIwQCAzClk0ljBAxqzlUqDKMEDN0IahXv8wQC6f7URvNDFA7RcaPdJpMUAOOwyKh58xQIgIxCuP1TFAYIBBIukLMkCZooRtlUIyQCxvjQ2UeTJAHeZbAuWwMkBwB\u002fBLiOgyQBzTSep9IDNAJklp3cVYM0CSaU4lYJEzQFc0+cFMyjNAeqlps4sDNED7yJ\u002f5HD00QN6Sm5QAdzRAGQddhDaxNECzJeTIvus0QK\u002fuMGKZJjVABGJDUMZhNUC3fxuTRZ01QMxHuSoX2TVAOrocFzsVNkAF10VYsVE2QDOeNO55jjZAug\u002fp2JTLNkCfK2MYAgk3QOHxoqzBRjdAhmKoldOEN0CEfXPTN8M3QOBCBGbuAThAnrJaTfdAOEC0zHaJUoA4QCmRWBoAwDhAAAAAAAAAOUA="},"type":"scatter"},{"line":{"color":"red","dash":"dash","width":2},"mode":"lines","name":"Tangent line (slope = 2)","x":{"dtype":"f8","bdata":"AAAAAAAA8L8K1PqVArXuvxWo9SsFau2\u002fH3zwwQcf7L8pUOtXCtTqvzQk5u0Miem\u002fPvjggw8+6L9IzNsZEvPmv1Kg1q8UqOW\u002fXXTRRRdd5L9nSMzbGRLjv3Icx3Ecx+G\u002ffPDBBx984L8MiXk7Q2LevyAxb2dIzNu\u002fNtlkk0022b9KgVq\u002fUqDWv14pUOtXCtS\u002fdNFFF1100b8Q83aGxLzNvzhDYt7OkMi\u002fZJNNNtlkw78Yx3Ecx3G8v2hnSMzbGbK\u002fAB988MEHn7+Av1Kg1q+EP0BvZ0jM26k\u002fUBdddNFFtz+AO0Ni3s7AP1DrVwrU+sU\u002fKJtssskmyz+ApUCtXynQP2z9SoFav9I\u002fWFVVVVVV1T9ErV8pUOvXPzAFav1Kgdo\u002fGF100UUX3T8EtX6lQK3fP3iGxLydIeE\u002fbrLJJpts4j9k3s6QmLfjP1oK1PqVAuU\u002fTjbZZJNN5j9EYt7OkJjnPzqO4ziO4+g\u002fMLrooosu6j8m5u0MiXnrPxwS83aGxOw\u002fED744IMP7j8Gav1KgVrvP\u002f5KgVq\u002fUvA\u002f+uCDDz748D\u002f0dobEvJ3xP+4MiXk7Q\u002fI\u002f6qKLLrro8j\u002fkOI7jOI7zP+DOkJi3M\u002fQ\u002f2mSTTTbZ9D\u002fU+pUCtX71P9CQmLczJPY\u002fyiabbLLJ9j\u002fGvJ0hMW\u002f3P8BSoNavFPg\u002fvOiiiy66+D+2fqVArV\u002f5P7AUqPUrBfo\u002frKqqqqqq+j+mQK1fKVD7P6LWrxSo9fs\u002fnGyyySab\u002fD+YArV+pUD9P5KYtzMk5v0\u002fjC666KKL\u002fj+IxLydITH\u002fP4Jav1Kg1v8\u002fP\u002fjggw8+AEA8Q2LezpAAQDmO4ziO4wBAN9lkk002AUA0JObtDIkBQDJvZ0jM2wFAL7rooosuAkAtBWr9SoECQCpQ61cK1AJAJ5tssskmA0Al5u0MiXkDQCIxb2dIzANAIHzwwQcfBEAdx3Ecx3EEQBsS83aGxARAGF100UUXBUAVqPUrBWoFQBPzdobEvAVAED744IMPBkAOiXk7Q2IGQAvU+pUCtQZACB988MEHB0AGav1KgVoHQAO1fqVArQdAAAAAAAAACEA="},"y":{"dtype":"f8","bdata":"AAAAAAAACMAFav1KgVoHwArU+pUCtQbAED744IMPBsAUqPUrBWoFwBoS83aGxATAH3zwwQcfBMAk5u0MiXkDwClQ61cK1ALALrrooosuAsA0JObtDIkBwDmO4ziO4wDAPvjggw8+AMCGxLydITH\u002fv5CYtzMk5v2\u002fnGyyySab\u002fL+kQK1fKVD7v7AUqPUrBfq\u002fuuiiiy66+L\u002fEvJ0hMW\u002f3v86QmLczJPa\u002f2GSTTTbZ9L\u002fkOI7jOI7zv+wMiXk7Q\u002fK\u002f+OCDDz748L8Eav1KgVrvvxgS83aGxOy\u002fLLrooosu6r9AYt7OkJjnv1gK1PqVAuW\u002fbLLJJpts4r8AtX6lQK3fvygFav1Kgdq\u002fUFVVVVVV1b94pUCtXynQv0DrVwrU+sW\u002fQBdddNFFt78Av1Kg1q+Ev4BnSMzbGbI\u002fcJNNNtlkwz8g83aGxLzNP2gpUOtXCtQ\u002fONlkk0022T8QiXk7Q2LeP3Qcx3Ecx+E\u002fYHTRRRdd5D9MzNsZEvPmPzgk5u0Miek\u002fIHzwwQcf7D8M1PqVArXuP\u002fyVArV+pfA\u002f9MEHH3zw8T\u002fo7QyJeTvzP9wZEvN2hvQ\u002f1EUXXXTR9T\u002fIcRzHcRz3P8CdITFvZ\u002fg\u002ftMkmm2yy+T+o9SsFav36P6AhMW9nSPw\u002flE022WST\u002fT+MeTtDYt7+P8BSoNavFABAvOiiiy66AEC2fqVArV8BQLAUqPUrBQJArKqqqqqqAkCmQK1fKVADQKLWrxSo9QNAnGyyySabBECYArV+pUAFQJKYtzMk5gVAjC666KKLBkCIxLydITEHQIJav1Kg1gdAfvDBBx98CEB4hsS8nSEJQHIcx3EcxwlAbrLJJptsCkBoSMzbGRILQGTezpCYtwtAXnTRRRddDEBaCtT6lQINQFSg1q8UqA1ATjbZZJNNDkBKzNsZEvMOQERi3s6QmA9AIHzwwQcfEEAdx3Ecx3EQQBsS83aGxBBAGF100UUXEUAVqPUrBWoRQBPzdobEvBFAED744IMPEkAOiXk7Q2ISQAvU+pUCtRJACB988MEHE0AGav1KgVoTQAO1fqVArRNAAAAAAAAAFEA="},"type":"scatter"},{"marker":{"color":"black","size":10},"mode":"markers+text","name":"(1, 1)","text":["(1, 1)"],"textposition":"bottom right","x":[1],"y":[1],"type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"xaxis":{"title":{"text":"x"},"range":[-6,6]},"yaxis":{"title":{"text":"y"},"range":[-3,16]},"margin":{"t":50,"b":70},"title":{"text":"Tangent line at (1,1) on y = x\u00b2 \u2014 slope = 2"},"legend":{"title":{"text":"Legend"}},"height":350},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('15302462-5428-4952-8f60-07aa08dffe6c');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+<p><br> Let’s check for another point on the curve. Let <span class="math inline">\(x = 2.5\)</span>, the point on curve is <span class="math inline">\((x = 2.5, y = 2.5^2) = (2.5, 6.25)\)</span>. The gradient at this point is <span class="math inline">\(2a = 2 * 2.5 = 5\)</span>. <br> Hence, we expect the curve to be steeper here since the gradient here (5) is more than the gradient at <span class="math inline">\((1,1)\)</span> (which is 2). Let’s plot the point <span class="math inline">\((2.5, 6.25)\)</span> on the curve and have a line with slope 5 pass through it. Indeed it’s the tangent to the curve and the steepness of the curve here is more than at point <span class="math inline">\((1,1)\)</span>.</p>
+<div id="f99208d1" class="cell" data-execution_count="4">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Point of tangency</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>x0, y0 <span class="op">=</span> <span class="fl">2.5</span>, <span class="fl">6.25</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>slope <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Curve</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>x_vals <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">400</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>y_vals <span class="op">=</span> x_vals<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Tangent line: y - y0 = slope * (x - x0)  =&gt;  y = y0 + slope*(x - x0)</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>x_line <span class="op">=</span> np.linspace(x0 <span class="op">-</span> <span class="dv">2</span>, x0 <span class="op">+</span> <span class="dv">2</span>, <span class="dv">100</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>y_line <span class="op">=</span> y0 <span class="op">+</span> slope <span class="op">*</span> (x_line <span class="op">-</span> x0)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure()</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot y = x^2</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_vals, y<span class="op">=</span>y_vals,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"y = x²"</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"royalblue"</span>, width<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot tangent line</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_line, y<span class="op">=</span>y_line,</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"Tangent line (slope = </span><span class="sc">{</span>slope<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, width<span class="op">=</span><span class="dv">2</span>, dash<span class="op">=</span><span class="st">"dash"</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Mark the point of tangency</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>[x0], y<span class="op">=</span>[y0],</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"markers+text"</span>,</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"black"</span>, size<span class="op">=</span><span class="dv">10</span>),</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span>[<span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>],</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    textposition<span class="op">=</span><span class="st">"bottom right"</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Tangent line at (2.5,6.25) on y = x² | Slope = 5"</span>,</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    xaxis_title<span class="op">=</span><span class="st">"x"</span>,</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    yaxis_title<span class="op">=</span><span class="st">"y"</span>,</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    template<span class="op">=</span><span class="st">"plotly_white"</span>,</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    xaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">6</span>, <span class="dv">6</span>]),</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    yaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">3</span>, <span class="dv">16</span>]),</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span><span class="bu">dict</span>(title<span class="op">=</span><span class="st">"Legend"</span>),</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">350</span>,</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">=</span><span class="bu">dict</span>(t<span class="op">=</span><span class="dv">50</span>, b<span class="op">=</span><span class="dv">70</span>)</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div style="height:350px; width:100%;">            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="361f1c40-c140-4f4d-957b-7d56a62e6319" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("361f1c40-c140-4f4d-957b-7d56a62e6319")) {                    Plotly.newPlot(                        "361f1c40-c140-4f4d-957b-7d56a62e6319",                        [{"line":{"color":"royalblue","width":2},"mode":"lines","name":"y = x\u00b2","x":{"dtype":"f8","bdata":"AAAAAAAAFMBlfpX5VeYTwMv8KvOrzBPAMHvA7AGzE8CW+VXmV5kTwPt369+tfxPAYPaA2QNmE8DGdBbTWUwTwCvzq8yvMhPAkHFBxgUZE8D279a\u002fW\u002f8SwFtubLmx5RLAwOwBswfMEsAma5esXbISwIvpLKazmBLA8WfCnwl\u002fEsBW5leZX2USwLtk7ZK1SxLAIeOCjAsyEsCGYRiGYRgSwOzfrX+3\u002fhHAUV5DeQ3lEcC23NhyY8sRwBxbbmy5sRHAgdkDZg+YEcDmV5lfZX4RwEzWLlm7ZBHAsVTEUhFLEcAW01lMZzERwHxR70W9FxHA4c+EPxP+EMBHTho5aeQQwKzMrzK\u002fyhDAEUtFLBWxEMB3ydola5cQwNxHcB\u002fBfRDAQsYFGRdkEMCnRJsSbUoQwAzDMAzDMBDAckHGBRkXEMCuf7f+3foPwHl84vGJxw\u002fARHkN5TWUD8AOdjjY4WAPwNlyY8uNLQ\u002fApG+Ovjn6DsBubLmx5cYOwDlp5KSRkw7ABGYPmD1gDsDPYjqL6SwOwJpfZX6V+Q3AZFyQcUHGDcAvWbtk7ZINwPpV5leZXw3AxFIRS0UsDcCPTzw+8fgMwFpMZzGdxQzAJUmSJEmSDMDwRb0X9V4MwLpC6AqhKwzAhT8T\u002fkz4C8BQPD7x+MQLwBo5aeSkkQvA5TWU11BeC8CwMr\u002fK\u002fCoLwHsv6r2o9wrARiwVsVTECsAQKUCkAJEKwNsla5esXQrApiKWilgqCsBwH8F9BPcJwDsc7HCwwwnABhkXZFyQCcDRFUJXCF0JwJwSbUq0KQnAZg+YPWD2CMAxDMMwDMMIwPwI7iO4jwjAxgUZF2RcCMCRAkQKECkIwFz\u002fbv279QfAJ\u002fyZ8GfCB8Dy+MTjE48HwLz179a\u002fWwfAh\u002fIaymsoB8BS70W9F\u002fUGwBzscLDDwQbA5+ibo2+OBsCy5caWG1sGwH3i8YnHJwbASN8cfXP0BcAS3EdwH8EFwN3YcmPLjQXAqNWdVndaBcBy0shJIycFwD3P8zzP8wTACMweMHvABMDTyEkjJ40EwJ7FdBbTWQTAaMKfCX8mBMAzv8r8KvMDwP679e\u002fWvwPAyLgg44KMA8CTtUvWLlkDwF6ydsnaJQPAKa+hvIbyAsD0q8yvMr8CwL6o96LeiwLAiaUilopYAsBUok2JNiUCwB6feHzi8QHA6Zujb46+AcC0mM5iOosBwH+V+VXmVwHASpIkSZIkAcAUj088PvEAwN+Lei\u002fqvQDAqoilIpaKAMB0hdAVQlcAwD+C+wjuIwDAFP5M+DPh\u002f7+q96Lei3r\u002fv0Dx+MTjE\u002f+\u002f1OpOqzut\u002fr9q5KSRk0b+vwDe+nfr3\u002f2\u002flNdQXkN5\u002fb8q0aZEmxL9v8DK\u002fCrzq\u002fy\u002fVsRSEUtF\u002fL\u002fsvaj3ot77v4C3\u002ft36d\u002fu\u002fFrFUxFIR+7+sqqqqqqr6v0CkAJECRPq\u002f1p1Wd1rd+b9sl6xdsnb5vwKRAkQKEPm\u002fmIpYKmKp+L8shK4QukL4v8J9BPcR3Pe\u002fWHda3Wl197\u002fscLDDwQ73v4JqBqoZqPa\u002fGGRckHFB9r+uXbJ2ydr1v0RXCF0hdPW\u002f2FBeQ3kN9b9uSrQp0ab0vwREChApQPS\u002fmD1g9oDZ878uN7bc2HLzv8QwDMMwDPO\u002fWipiqYil8r\u002fwI7iP4D7yv4QdDnY42PG\u002fGhdkXJBx8b+wELpC6Arxv0QKEClApPC\u002f2gNmD5g98L\u002fg+nfr363vvwjuI7iP4O6\u002fOOHPhD8T7r9g1HtR70Xtv5DHJx6feOy\u002fuLrT6k6r67\u002fgrX+3\u002ft3qvxChK4SuEOq\u002fOJTXUF5D6b9gh4MdDnbov5B6L+q9qOe\u002fuG3btm3b5r\u002fgYIeDHQ7mvxBUM1DNQOW\u002fOEffHH1z5L9oOovpLKbjv5AtN7bc2OK\u002fuCDjgowL4r\u002foE49PPD7hvxAHOxzscOC\u002fgPTN0TdH37\u002fQ2iVrl6zdvyDBfQT3Edy\u002fgKfVnVZ32r\u002fQjS03ttzYvyB0hdAVQte\u002fgFrdaXWn1b\u002fQQDUD1QzUvyAnjZw0ctK\u002fgA3lNZTX0L+g53me53nOv2C0KdGmRMu\u002fAIHZA2YPyL+gTYk2JdrEv2AaOWnkpMG\u002fAM7RN0ffvL+AZzGdxXS2v8AAkQJECrC\u002fADThz4Q\u002fo78AnIFqBqqJvwCagWoGqok\u002fADThz4Q\u002foz+AAJECRAqwP0BnMZ3FdLY\u002fAM7RN0ffvD9AGjlp5KTBP6BNiTYl2sQ\u002f4IDZA2YPyD9AtCnRpkTLP6DneZ7nec4\u002fcA3lNZTX0D8gJ42cNHLSP8BANQPVDNQ\u002fcFrdaXWn1T8gdIXQFULXP8CNLTe23Ng\u002fcKfVnVZ32j8gwX0E9xHcP8DaJWuXrN0\u002fcPTN0TdH3z8QBzsc7HDgP+ATj088PuE\u002fuCDjgowL4j+ILTe23NjiP2A6i+kspuM\u002fOEffHH1z5D8IVDNQzUDlP+Bgh4MdDuY\u002fsG3btm3b5j+Iei\u002fqvajnP2CHgx0Odug\u002fMJTXUF5D6T8IoSuErhDqP+Ctf7f+3eo\u002fsLrT6k6r6z+Ixycen3jsP2DUe1HvRe0\u002fMOHPhD8T7j8I7iO4j+DuP9j6d+vfre8\u002f2ANmD5g98D9EChApQKTwP6wQukLoCvE\u002fGBdkXJBx8T+AHQ52ONjxP+wjuI\u002fgPvI\u002fWCpiqYil8j\u002fAMAzDMAzzPyw3ttzYcvM\u002fmD1g9oDZ8z8ARAoQKUD0P2xKtCnRpvQ\u002f2FBeQ3kN9T9AVwhdIXT1P6xdsnbJ2vU\u002fFGRckHFB9j+AagaqGaj2P+xwsMPBDvc\u002fVHda3Wl19z\u002fAfQT3Edz3PyiErhC6Qvg\u002flIpYKmKp+D8AkQJEChD5P2iXrF2ydvk\u002f1J1Wd1rd+T9ApACRAkT6P6iqqqqqqvo\u002fFLFUxFIR+z+At\u002f7d+nf7P+i9qPei3vs\u002fVMRSEUtF\u002fD+8yvwq86v8PyjRpkSbEv0\u002flNdQXkN5\u002fT\u002f83fp369\u002f9P2jkpJGTRv4\u002f0OpOqzut\u002fj888fjE4xP\u002fP6j3ot6Lev8\u002fEP5M+DPh\u002fz8+gvsI7iMAQHSF0BVCVwBAqIilIpaKAEDei3ov6r0AQBSPTzw+8QBASJIkSZIkAUB+lflV5lcBQLKYzmI6iwFA6Jujb46+AUAen3h84vEBQFKiTYk2JQJAiKUilopYAkC8qPei3osCQPKrzK8yvwJAKK+hvIbyAkBcsnbJ2iUDQJK1S9YuWQNAyLgg44KMA0D8u\u002fXv1r8DQDK\u002fyvwq8wNAaMKfCX8mBECcxXQW01kEQNLISSMnjQRABsweMHvABEA8z\u002fM8z\u002fMEQHLSyEkjJwVAptWdVndaBUDc2HJjy40FQBDcR3AfwQVARt8cfXP0BUB84vGJxycGQLDlxpYbWwZA5uibo2+OBkAc7HCww8EGQFDvRb0X9QZAhvIaymsoB0C89e\u002fWv1sHQPD4xOMTjwdAJvyZ8GfCB0Ba\u002f279u\u002fUHQJACRAoQKQhAxAUZF2RcCED8CO4juI8IQDAMwzAMwwhAZA+YPWD2CECcEm1KtCkJQNAVQlcIXQlABBkXZFyQCUA4HOxwsMMJQHAfwX0E9wlApCKWilgqCkDYJWuXrF0KQBApQKQAkQpARCwVsVTECkB4L+q9qPcKQLAyv8r8KgtA5DWU11BeC0AYOWnkpJELQFA8PvH4xAtAhD8T\u002fkz4C0C4QugKoSsMQPBFvRf1XgxAJEmSJEmSDEBYTGcxncUMQJBPPD7x+AxAxFIRS0UsDUD4VeZXmV8NQCxZu2Ttkg1AZFyQcUHGDUCYX2V+lfkNQMxiOovpLA5ABGYPmD1gDkA4aeSkkZMOQGxsubHlxg5ApG+Ovjn6DkDYcmPLjS0PQAx2ONjhYA9ARHkN5TWUD0B4fOLxiccPQKx\u002ft\u002f7d+g9AcEHGBRkXEEAMwzAMwzAQQKZEmxJtShBAQMYFGRdkEEDcR3AfwX0QQHbJ2iVrlxBAEEtFLBWxEECszK8yv8oQQEZOGjlp5BBA4M+EPxP+EEB8Ue9FvRcRQBbTWUxnMRFAsFTEUhFLEUBM1i5Zu2QRQOZXmV9lfhFAgNkDZg+YEUAcW25subERQLbc2HJjyxFAUF5DeQ3lEUDq361\u002ft\u002f4RQIZhGIZhGBJAIOOCjAsyEkC6ZO2StUsSQFbmV5lfZRJA8GfCnwl\u002fEkCK6Syms5gSQCZrl6xdshJAwOwBswfMEkBabmy5seUSQPbv1r9b\u002fxJAkHFBxgUZE0Aq86vMrzITQMR0FtNZTBNAYPaA2QNmE0D6d+vfrX8TQJT5VeZXmRNAMHvA7AGzE0DK\u002fCrzq8wTQGR+lflV5hNAAAAAAAAAFEA="},"y":{"dtype":"f8","bdata":"AAAAAAAAOUArkVgaAMA4QLfMdolSgDhAnrJaTfdAOEDkQgRm7gE4QId9c9M3wzdAhmKoldOEN0Dm8aKswUY3QKErYxgCCTdAug\u002fp2JTLNkAznjTueY42QAjXRVixUTZAOrocFzsVNkDMR7kqF9k1QLl\u002fG5NFnTVABmJDUMZhNUCv7jBimSY1QLUl5Mi+6zRAHAddhDaxNEDekpuUAHc0QP\u002fIn\u002fkcPTRAfKlps4sDNEBXNPnBTMozQJJpTiVgkTNAKElp3cVYM0Ac00nqfSAzQHAH8EuI6DJAH+ZbAuWwMkAsb40NlHkyQJmihG2VQjJAYoBBIukLMkCKCMQrj9UxQA47DIqHnzFA7xcaPdJpMUAwn+1EbzQxQM3QhqFe\u002fzBAyqzlUqDKMEAiMwpZNJYwQNhj9LMaYjBA7j6kY1MuMEC+iDPQvPUvQF7oqYJ3jy9Aupyr3tYpL0DOpTjk2sQuQKEDUZODYC5ALrb069D8LUB1vSPuwpktQHkZ3plZNy1AOcoj75TVLEC0z\u002fTtdHQsQOopUZb5EyxA2tg46CK0K0CH3Kvj8FQrQPA0qohj9ipAEuIz13qYKkDx40jPNjsqQIs66XCX3ilA4eUUvJyCKUDz5cuwRicpQL46Dk+VzChARuTblohyKECJ4jSIIBkoQIY1GSNdwCdAQN2IZz5oJ0C22YNVxBAnQOcqCu3uuSZA09AbLr5jJkB5y7gYMg4mQNwa4axKuSVA+76U6gdlJUDTt9PRaRElQGgFnmJwviRAuKfznBtsJEDEntSAaxokQIzqQA5gySNADYs4Rfl4I0BLgLslNykjQETKya8Z2iJA92hj46CLIkBnXIjAzD0iQJOkOEed8CFAekF0dxKkIUAcMztRLFghQHh5jdTqDCFAkRRrAU7CIEBlBNTXVXggQPRIyFcCLyBAfsSPAqfMH0CKoKWokjwfQA4m0qHHrR5ACFUV7kUgHkB3LW+NDZQdQF+v338eCR1AvdpmxXh\u002fHECQrwReHPcbQNwtuUkJcBtAn1WEiD\u002fqGkDZJmYav2UaQImhXv+H4hlArcVtN5pgGUBLk5PC9d8YQGAK0KCaYBhA6Soj0ojiF0Dr9IxWwGUXQGNoDS5B6hZAU4WkWAtwFkC5S1LWHvcVQJS7Fqd7fxVA6NTxyiEJFUCyl+NBEZQUQPED7AtKIBRAqRkLKcytE0DY2ECZlzwTQH1BjVyszBJAmVPwcgpeEkAqD2rcsfARQDR0+piihBFAtIKhqNwZEUCpOl8LYLAQQBecM8EsSBBA+E09lIXCD0CvtkBMRPcOQFNycaqVLg5A4YDPrnloDUBg4lpZ8KQMQM2WE6r54wtAI575oJUlC0Br+Aw+xGkKQKClTYGFsAlAw6W7atn5CEDT+Fb6v0UIQM2eHzA5lAdAuJcVDEXlBkCQ4ziO4zgGQFOCibYUjwVAB3QHhdjnBECouLL5LkMEQDZQixQYoQNAsjqR1ZMBA0AZeMQ8omQCQHAIJUpDygFAtOuy\u002fXYyAUDjIW5XPZ0AQAKrVleWCgBAHw7Z+gP1\u002fj8UbF+TANr9P+NvQHgixPw\u002fiRl8qWmz+z8OaRIn1qf6P29eA\u002fFnofk\u002fpflOBx+g+D+8OvVp+6P3P64h9hj9rPY\u002feq5RFCS79T8h4QdccM70P5+5GPDh5vM\u002f\u002fTeE0HgE8z81XEr9NCfyP0Qma3YWT\u002fE\u002fMpbmOx188D\u002f3V3mbklzvPzjP2lc1y+0\u002fPpLxrCJE7D\u002froL2aWsfqP1z7PiHdVOk\u002fdaF1QKrs5z9Fk2H4wY7mP9fQAkkkO+U\u002fE1pZMtHx4z8FL2W0yLLiP7lPJs8KfuE\u002fF7ycgpdT4D9W6JCd3WbePwDwUmchO9w\u002fAY9\u002fYvoj2j+CxRaPaCHYP1uTGO1rM9Y\u002foPiEfARa1D9k9Vs9MpXSP4KJnS\u002f15NA\u002fOGqTppqSzj8l8MBQdYTLP+ukw116n8g\u002fpYibzanjxT8bm0igA1HDP2vcytWH58A\u002fU5lE3GxOvT9U153SHiC5PwdzoY4lRLU\u002fjmxPEIG6sT9Eh0+vYgatPwjxVMlsPKc\u002f9BWvbiAXoj+I7Ls++yybPzgkw7YIdZM\u002fvKTnitIMij\u002fm3Terc4R\u002fP5JMRpuOFHA\u002filnql9cnVz8tbpdqMZUkP\u002fdql2oxlSQ\u002filnql9cnVz8STEabjhRwPzLdN6tzhH8\u002fvKTnitIMij\u002fyI8O2CHWTP4jsuz77LJs\u002fxBWvbiAXoj\u002fS8FTJbDynP0SHT69iBq0\u002fbGxPEIG6sT8Hc6GOJUS1PyzXndIeILk\u002fKJlE3GxOvT9r3MrVh+fAPwKbSKADUcM\u002fioibzanjxT\u002frpMNdep\u002fIPwjwwFB1hMs\u002fGWqTppqSzj+CiZ0v9eTQP1P1Wz0yldI\u002foPiEfARa1D9IkxjtazPWP27FFo9oIdg\u002fAY9\u002fYvoj2j\u002fr71JnITvcP1bokJ3dZt4\u002fC7ycgpdT4D+tTybPCn7hPwUvZbTIsuI\u002fBlpZMtHx4z\u002fK0AJJJDvlP0WTYfjBjuY\u002faKF1QKrs5z9O+z4h3VTpP+ugvZpax+o\u002fL5LxrCJE7D84z9pXNcvtP+hXeZuSXO8\u002fLpbmOx188D9EJmt2Fk\u002fxPy1cSv00J\u002fI\u002f+DeE0HgE8z+WuRjw4ebzPxjhB1xwzvQ\u002fda5RFCS79T+kIfYY\u002faz2P7c69Wn7o\u002fc\u002fpflOBx+g+D9lXgPxZ6H5PwlpEifWp\u002fo\u002fiRl8qWmz+z\u002fYb0B4IsT8Pw5sX5MA2v0\u002fFA7Z+gP1\u002fj8Aq1ZXlgoAQOMhblc9nQBAruuy\u002fXYyAUBtCCVKQ8oBQBN4xDyiZAJArDqR1ZMBA0AzUIsUGKEDQKG4svkuQwRABHQHhdjnBEBTgom2FI8FQIrjOI7jOAZAtJcVDEXlBkDNnh8wOZQHQMz4Vvq\u002fRQhAv6W7atn5CECZpU2BhbAJQGf4DD7EaQpAI575oJUlC0DFlhOq+eMLQFziWlnwpAxA2YDPrnloDUBLcnGqlS4OQKu2QExE9w5A8E09lIXCD0AVnDPBLEgQQKk6XwtgsBBAsIKhqNwZEUAydPqYooQRQCoPatyx8BFAlVPwcgpeEkB7QY1crMwSQNPYQJmXPBNApxkLKcytE0DxA+wLSiAUQK6X40ERlBRA5dTxyiEJFUCPuxane38VQLRLUtYe9xVAUYWkWAtwFkBfaA0uQeoWQOj0jFbAZRdA6Soj0ojiF0BbCtCgmmAYQEmTk8L13xhArcVtN5pgGUCEoV7\u002fh+IZQNYmZhq\u002fZRpAmlWEiD\u002fqGkDaLblJCXAbQJCvBF4c9xtAuNpmxXh\u002fHEBcr99\u002fHgkdQHEtb40NlB1AA1UV7kUgHkALJtKhx60eQIWgpaiSPB9Ae8SPAqfMH0D0SMhXAi8gQGME1NdVeCBAkBRrAU7CIEB4eY3U6gwhQBkzO1EsWCFAeEF0dxKkIUCQpDhHnfAhQGZciMDMPSJA9Ghj46CLIkBEysmvGdoiQEmAuyU3KSNACos4Rfl4I0CM6kAOYMkjQMOe1IBrGiRAtafznBtsJEBjBZ5icL4kQNO309FpESVA976U6gdlJUDXGuGsSrklQHnLuBgyDiZA0NAbLr5jJkDiKgrt7rkmQLbZg1XEECdAP92IZz5oJ0CDNRkjXcAnQIniNIggGShAROTblohyKEC6Og5PlcwoQPPly7BGJylA4OUUvJyCKUCIOulwl94pQPPjSM82OypAEuIz13qYKkDsNKqIY\u002fYqQILcq+PwVCtA2tg46CK0K0DmKVGW+RMsQK7P9O10dCxAOcoj75TVLEB3Gd6ZWTctQHG9I+7CmS1ALrb069D8LUCfA1GTg2AuQMqlOOTaxC5Aupyr3tYpL0Bc6KmCd48vQLqIM9C89S9A6j6kY1MuMEDYY\u002fSzGmIwQCAzClk0ljBAxqzlUqDKMEDN0IahXv8wQC6f7URvNDFA7RcaPdJpMUAOOwyKh58xQIgIxCuP1TFAYIBBIukLMkCZooRtlUIyQCxvjQ2UeTJAHeZbAuWwMkBwB\u002fBLiOgyQBzTSep9IDNAJklp3cVYM0CSaU4lYJEzQFc0+cFMyjNAeqlps4sDNED7yJ\u002f5HD00QN6Sm5QAdzRAGQddhDaxNECzJeTIvus0QK\u002fuMGKZJjVABGJDUMZhNUC3fxuTRZ01QMxHuSoX2TVAOrocFzsVNkAF10VYsVE2QDOeNO55jjZAug\u002fp2JTLNkCfK2MYAgk3QOHxoqzBRjdAhmKoldOEN0CEfXPTN8M3QOBCBGbuAThAnrJaTfdAOEC0zHaJUoA4QCmRWBoAwDhAAAAAAAAAOUA="},"type":"scatter"},{"line":{"color":"red","dash":"dash","width":2},"mode":"lines","name":"Tangent line (slope = 5)","x":{"dtype":"f8","bdata":"AAAAAAAA4D\u002f2KwVq\u002fUrhP+tXCtT6leI\u002f4YMPPvjg4z\u002fXrxSo9SvlP8zbGRLzduY\u002fwgcffPDB5z+4MyTm7QzpP65fKVDrV+o\u002fo4suuuii6z+ZtzMk5u3sP47jOI7jOO4\u002fhA8++OCD7z+9nSExb2fwP7gzJObtDPE\u002fsskmm2yy8T+uXylQ61fyP6j1KwVq\u002ffI\u002fo4suuuii8z+eITFvZ0j0P5m3MyTm7fQ\u002flE022WST9T+O4ziO4zj2P4p5O0Ni3vY\u002fhA8++OCD9z9\u002fpUCtXyn4P3o7Q2Lezvg\u002fddFFF110+T9wZ0jM2xn6P2r9SoFav\u002fo\u002fZZNNNtlk+z9gKVDrVwr8P1u\u002fUqDWr\u002fw\u002fVlVVVVVV\u002fT9R61cK1Pr9P0yBWr9SoP4\u002fRhdddNFF\u002fz9BrV8pUOv\u002fP54hMW9nSABAnGyyySabAECZtzMk5u0AQJYCtX6lQAFAlE022WSTAUCRmLczJOYBQI7jOI7jOAJAjC666KKLAkCKeTtDYt4CQIfEvJ0hMQNAhA8++OCDA0CCWr9SoNYDQH+lQK1fKQRAffDBBx98BEB6O0Ni3s4EQHeGxLydIQVAddFFF110BUByHMdxHMcFQHBnSMzbGQZAbbLJJptsBkBq\u002fUqBWr8GQGhIzNsZEgdAZZNNNtlkB0Bj3s6QmLcHQGApUOtXCghAXnTRRRddCEBbv1Kg1q8IQFgK1PqVAglAVlVVVVVVCUBToNavFKgJQFHrVwrU+glATjbZZJNNCkBMgVq\u002fUqAKQEnM2xkS8wpARhdddNFFC0BEYt7OkJgLQEGtXylQ6wtAP\u002fjggw8+DEA8Q2LezpAMQDmO4ziO4wxAN9lkk002DUA0JObtDIkNQDJvZ0jM2w1AL7rooosuDkAtBWr9SoEOQCpQ61cK1A5AJ5tssskmD0Al5u0MiXkPQCIxb2dIzA9AED744IMPEECO4ziO4zgQQA6JeTtDYhBAjC666KKLEEAK1PqVArUQQIp5O0Ni3hBACB988MEHEUCHxLydITERQAZq\u002fUqBWhFAhA8++OCDEUADtX6lQK0RQIJav1Kg1hFAAAAAAAAAEkA="},"y":{"dtype":"f8","bdata":"AAAAAAAADsAMiXk7Q2IMwBgS83aGxArAKJtssskmCcAwJObtDIkHwECtXylQ6wXATDbZZJNNBMBYv1Kg1q8CwGhIzNsZEgHA6KKLLrro\u002fr8EtX6lQK37vxzHcRzHcfi\u002fONlkk0029b9Q61cK1Prxv9D6lQK1fu2\u002fEB988MEH578wQ2LezpDgv+DOkJi3M9S\u002fAF100UUXvb+AgVq\u002fUqC2P\u002fBXCtT6ldI\u002fkA8++OCD3z+Q4ziO4zjmP2C\u002fUqDWr+w\u002flE022WST8T98O0Ni3s70P2ApUOtXCvg\u002fSBdddNFF+z8wBWr9SoH+P4h5O0Ni3gBAfPDBBx98AkBwZ0jM2xkEQGTezpCYtwVAV1VVVVVVB0BKzNsZEvMIQD5DYt7OkApAL7rooosuDEAiMW9nSMwNQBao9SsFag9Ahg8++OCDEED+SoFav1IRQHeGxLydIRJA8sEHH3zwEkBq\u002fUqBWr8TQOM4juM4jhRAXnTRRRddFUDZrxSo9SsWQFLrVwrU+hZAyiabbLLJF0BFYt7OkJgYQL6dITFvZxlAONlkk002GkCxFKj1KwUbQCpQ61cK1BtApIsuuuiiHEAdx3Ecx3EdQJgCtX6lQB5AED744IMPH0CJeTtDYt4fQIJav1KgViBAPvjggw++IED8lQK1fiUhQLgzJObtjCFAdtFFF130IUAyb2dIzFsiQO4MiXk7wyJArKqqqqoqI0BoSMzbGZIjQCXm7QyJ+SNA4oMPPvhgJECfITFvZ8gkQFu\u002fUqDWLyVAGF100UWXJUDV+pUCtf4lQJGYtzMkZiZATzbZZJPNJkAL1PqVAjUnQMdxHMdxnCdAhQ8++OADKEBBrV8pUGsoQP5KgVq\u002f0ihAu+iiiy46KUB4hsS8naEpQDQk5u0MCSpA8cEHH3xwKkCuXylQ69cqQGr9SoFaPytAKJtsssmmK0DjOI7jOA4sQKPWrxSodSxAXnTRRRfdLEAZEvN2hkQtQNmvFKj1qy1AlE022WQTLkBS61cK1HouQA+JeTtD4i5AyiabbLJJL0CIxLydIbEvQCIxb2dIDDBAAAAAAABAMEA="},"type":"scatter"},{"marker":{"color":"black","size":10},"mode":"markers+text","name":"(2.5, 6.25)","text":["(2.5, 6.25)"],"textposition":"bottom right","x":[2.5],"y":[6.25],"type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"xaxis":{"title":{"text":"x"},"range":[-6,6]},"yaxis":{"title":{"text":"y"},"range":[-3,16]},"margin":{"t":50,"b":70},"title":{"text":"Tangent line at (2.5,6.25) on y = x\u00b2 | Slope = 5"},"legend":{"title":{"text":"Legend"}},"height":350},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('361f1c40-c140-4f4d-957b-7d56a62e6319');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+<p>It is important to note that at this point, a line with any other slope will not be the tangent. <br> Lets plot the point <span class="math inline">\((2.5, 6.25)\)</span> on the curve and have a line with slope 7 instead of 5 pass through it.</p>
+<div id="7ae6dc1c" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotly.graph_objects <span class="im">as</span> go</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Point of tangency</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>x0, y0 <span class="op">=</span> <span class="fl">2.5</span>, <span class="fl">6.25</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>slope <span class="op">=</span> <span class="dv">7</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Curve</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>x_vals <span class="op">=</span> np.linspace(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dv">400</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>y_vals <span class="op">=</span> x_vals<span class="op">**</span><span class="dv">2</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Tangent line: y - y0 = slope * (x - x0)  =&gt;  y = y0 + slope*(x - x0)</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>x_line <span class="op">=</span> np.linspace(x0 <span class="op">-</span> <span class="dv">2</span>, x0 <span class="op">+</span> <span class="dv">2</span>, <span class="dv">100</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>y_line <span class="op">=</span> y0 <span class="op">+</span> slope <span class="op">*</span> (x_line <span class="op">-</span> x0)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> go.Figure()</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot y = x^2</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_vals, y<span class="op">=</span>y_vals,</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"y = x²"</span>,</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"royalblue"</span>, width<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot tangent line</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>x_line, y<span class="op">=</span>y_line,</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"lines"</span>,</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"Tangent line (slope = </span><span class="sc">{</span>slope<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    line<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"red"</span>, width<span class="op">=</span><span class="dv">2</span>, dash<span class="op">=</span><span class="st">"dash"</span>)</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Mark the point of tangency</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>fig.add_trace(go.Scatter(</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>[x0], y<span class="op">=</span>[y0],</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    mode<span class="op">=</span><span class="st">"markers+text"</span>,</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    marker<span class="op">=</span><span class="bu">dict</span>(color<span class="op">=</span><span class="st">"black"</span>, size<span class="op">=</span><span class="dv">10</span>),</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>    text<span class="op">=</span>[<span class="ss">f"(</span><span class="sc">{</span>x0<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span>y0<span class="sc">}</span><span class="ss">)"</span>],</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    textposition<span class="op">=</span><span class="st">"bottom right"</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>fig.update_layout(</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Tangent line at (2.5,6.25) on y = x² | Slope = 7"</span>,</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    xaxis_title<span class="op">=</span><span class="st">"x"</span>,</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    yaxis_title<span class="op">=</span><span class="st">"y"</span>,</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    template<span class="op">=</span><span class="st">"plotly_white"</span>,</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    xaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">6</span>, <span class="dv">6</span>]),</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    yaxis<span class="op">=</span><span class="bu">dict</span>(<span class="bu">range</span><span class="op">=</span>[<span class="op">-</span><span class="dv">3</span>, <span class="dv">16</span>]),</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    legend<span class="op">=</span><span class="bu">dict</span>(title<span class="op">=</span><span class="st">"Legend"</span>),</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    height<span class="op">=</span><span class="dv">350</span>,</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    margin<span class="op">=</span><span class="bu">dict</span>(t<span class="op">=</span><span class="dv">50</span>, b<span class="op">=</span><span class="dv">70</span>)</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>fig.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-display">
+<div style="height:350px; width:100%;">            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_SVG"></script><script>if (window.MathJax && window.MathJax.Hub && window.MathJax.Hub.Config) {window.MathJax.Hub.Config({SVG: {font: "STIX-Web"}});}</script>                <script>window.PlotlyConfig = {MathJaxConfig: 'local'};</script>
+        <script charset="utf-8" src="https://cdn.plot.ly/plotly-3.7.0.min.js" integrity="sha256-jvTGqxNp8AGWEcvNLVuKr+8j5dGe9Yw51LQkmDH+IYA=" crossorigin="anonymous"></script>                <div id="c74beee4-26b9-4174-b010-252b2f3a28b1" class="plotly-graph-div" style="height:100%; width:100%;"></div>            <script>                window.PLOTLYENV=window.PLOTLYENV || {};                                if (document.getElementById("c74beee4-26b9-4174-b010-252b2f3a28b1")) {                    Plotly.newPlot(                        "c74beee4-26b9-4174-b010-252b2f3a28b1",                        [{"line":{"color":"royalblue","width":2},"mode":"lines","name":"y = x\u00b2","x":{"dtype":"f8","bdata":"AAAAAAAAFMBlfpX5VeYTwMv8KvOrzBPAMHvA7AGzE8CW+VXmV5kTwPt369+tfxPAYPaA2QNmE8DGdBbTWUwTwCvzq8yvMhPAkHFBxgUZE8D279a\u002fW\u002f8SwFtubLmx5RLAwOwBswfMEsAma5esXbISwIvpLKazmBLA8WfCnwl\u002fEsBW5leZX2USwLtk7ZK1SxLAIeOCjAsyEsCGYRiGYRgSwOzfrX+3\u002fhHAUV5DeQ3lEcC23NhyY8sRwBxbbmy5sRHAgdkDZg+YEcDmV5lfZX4RwEzWLlm7ZBHAsVTEUhFLEcAW01lMZzERwHxR70W9FxHA4c+EPxP+EMBHTho5aeQQwKzMrzK\u002fyhDAEUtFLBWxEMB3ydola5cQwNxHcB\u002fBfRDAQsYFGRdkEMCnRJsSbUoQwAzDMAzDMBDAckHGBRkXEMCuf7f+3foPwHl84vGJxw\u002fARHkN5TWUD8AOdjjY4WAPwNlyY8uNLQ\u002fApG+Ovjn6DsBubLmx5cYOwDlp5KSRkw7ABGYPmD1gDsDPYjqL6SwOwJpfZX6V+Q3AZFyQcUHGDcAvWbtk7ZINwPpV5leZXw3AxFIRS0UsDcCPTzw+8fgMwFpMZzGdxQzAJUmSJEmSDMDwRb0X9V4MwLpC6AqhKwzAhT8T\u002fkz4C8BQPD7x+MQLwBo5aeSkkQvA5TWU11BeC8CwMr\u002fK\u002fCoLwHsv6r2o9wrARiwVsVTECsAQKUCkAJEKwNsla5esXQrApiKWilgqCsBwH8F9BPcJwDsc7HCwwwnABhkXZFyQCcDRFUJXCF0JwJwSbUq0KQnAZg+YPWD2CMAxDMMwDMMIwPwI7iO4jwjAxgUZF2RcCMCRAkQKECkIwFz\u002fbv279QfAJ\u002fyZ8GfCB8Dy+MTjE48HwLz179a\u002fWwfAh\u002fIaymsoB8BS70W9F\u002fUGwBzscLDDwQbA5+ibo2+OBsCy5caWG1sGwH3i8YnHJwbASN8cfXP0BcAS3EdwH8EFwN3YcmPLjQXAqNWdVndaBcBy0shJIycFwD3P8zzP8wTACMweMHvABMDTyEkjJ40EwJ7FdBbTWQTAaMKfCX8mBMAzv8r8KvMDwP679e\u002fWvwPAyLgg44KMA8CTtUvWLlkDwF6ydsnaJQPAKa+hvIbyAsD0q8yvMr8CwL6o96LeiwLAiaUilopYAsBUok2JNiUCwB6feHzi8QHA6Zujb46+AcC0mM5iOosBwH+V+VXmVwHASpIkSZIkAcAUj088PvEAwN+Lei\u002fqvQDAqoilIpaKAMB0hdAVQlcAwD+C+wjuIwDAFP5M+DPh\u002f7+q96Lei3r\u002fv0Dx+MTjE\u002f+\u002f1OpOqzut\u002fr9q5KSRk0b+vwDe+nfr3\u002f2\u002flNdQXkN5\u002fb8q0aZEmxL9v8DK\u002fCrzq\u002fy\u002fVsRSEUtF\u002fL\u002fsvaj3ot77v4C3\u002ft36d\u002fu\u002fFrFUxFIR+7+sqqqqqqr6v0CkAJECRPq\u002f1p1Wd1rd+b9sl6xdsnb5vwKRAkQKEPm\u002fmIpYKmKp+L8shK4QukL4v8J9BPcR3Pe\u002fWHda3Wl197\u002fscLDDwQ73v4JqBqoZqPa\u002fGGRckHFB9r+uXbJ2ydr1v0RXCF0hdPW\u002f2FBeQ3kN9b9uSrQp0ab0vwREChApQPS\u002fmD1g9oDZ878uN7bc2HLzv8QwDMMwDPO\u002fWipiqYil8r\u002fwI7iP4D7yv4QdDnY42PG\u002fGhdkXJBx8b+wELpC6Arxv0QKEClApPC\u002f2gNmD5g98L\u002fg+nfr363vvwjuI7iP4O6\u002fOOHPhD8T7r9g1HtR70Xtv5DHJx6feOy\u002fuLrT6k6r67\u002fgrX+3\u002ft3qvxChK4SuEOq\u002fOJTXUF5D6b9gh4MdDnbov5B6L+q9qOe\u002fuG3btm3b5r\u002fgYIeDHQ7mvxBUM1DNQOW\u002fOEffHH1z5L9oOovpLKbjv5AtN7bc2OK\u002fuCDjgowL4r\u002foE49PPD7hvxAHOxzscOC\u002fgPTN0TdH37\u002fQ2iVrl6zdvyDBfQT3Edy\u002fgKfVnVZ32r\u002fQjS03ttzYvyB0hdAVQte\u002fgFrdaXWn1b\u002fQQDUD1QzUvyAnjZw0ctK\u002fgA3lNZTX0L+g53me53nOv2C0KdGmRMu\u002fAIHZA2YPyL+gTYk2JdrEv2AaOWnkpMG\u002fAM7RN0ffvL+AZzGdxXS2v8AAkQJECrC\u002fADThz4Q\u002fo78AnIFqBqqJvwCagWoGqok\u002fADThz4Q\u002foz+AAJECRAqwP0BnMZ3FdLY\u002fAM7RN0ffvD9AGjlp5KTBP6BNiTYl2sQ\u002f4IDZA2YPyD9AtCnRpkTLP6DneZ7nec4\u002fcA3lNZTX0D8gJ42cNHLSP8BANQPVDNQ\u002fcFrdaXWn1T8gdIXQFULXP8CNLTe23Ng\u002fcKfVnVZ32j8gwX0E9xHcP8DaJWuXrN0\u002fcPTN0TdH3z8QBzsc7HDgP+ATj088PuE\u002fuCDjgowL4j+ILTe23NjiP2A6i+kspuM\u002fOEffHH1z5D8IVDNQzUDlP+Bgh4MdDuY\u002fsG3btm3b5j+Iei\u002fqvajnP2CHgx0Odug\u002fMJTXUF5D6T8IoSuErhDqP+Ctf7f+3eo\u002fsLrT6k6r6z+Ixycen3jsP2DUe1HvRe0\u002fMOHPhD8T7j8I7iO4j+DuP9j6d+vfre8\u002f2ANmD5g98D9EChApQKTwP6wQukLoCvE\u002fGBdkXJBx8T+AHQ52ONjxP+wjuI\u002fgPvI\u002fWCpiqYil8j\u002fAMAzDMAzzPyw3ttzYcvM\u002fmD1g9oDZ8z8ARAoQKUD0P2xKtCnRpvQ\u002f2FBeQ3kN9T9AVwhdIXT1P6xdsnbJ2vU\u002fFGRckHFB9j+AagaqGaj2P+xwsMPBDvc\u002fVHda3Wl19z\u002fAfQT3Edz3PyiErhC6Qvg\u002flIpYKmKp+D8AkQJEChD5P2iXrF2ydvk\u002f1J1Wd1rd+T9ApACRAkT6P6iqqqqqqvo\u002fFLFUxFIR+z+At\u002f7d+nf7P+i9qPei3vs\u002fVMRSEUtF\u002fD+8yvwq86v8PyjRpkSbEv0\u002flNdQXkN5\u002fT\u002f83fp369\u002f9P2jkpJGTRv4\u002f0OpOqzut\u002fj888fjE4xP\u002fP6j3ot6Lev8\u002fEP5M+DPh\u002fz8+gvsI7iMAQHSF0BVCVwBAqIilIpaKAEDei3ov6r0AQBSPTzw+8QBASJIkSZIkAUB+lflV5lcBQLKYzmI6iwFA6Jujb46+AUAen3h84vEBQFKiTYk2JQJAiKUilopYAkC8qPei3osCQPKrzK8yvwJAKK+hvIbyAkBcsnbJ2iUDQJK1S9YuWQNAyLgg44KMA0D8u\u002fXv1r8DQDK\u002fyvwq8wNAaMKfCX8mBECcxXQW01kEQNLISSMnjQRABsweMHvABEA8z\u002fM8z\u002fMEQHLSyEkjJwVAptWdVndaBUDc2HJjy40FQBDcR3AfwQVARt8cfXP0BUB84vGJxycGQLDlxpYbWwZA5uibo2+OBkAc7HCww8EGQFDvRb0X9QZAhvIaymsoB0C89e\u002fWv1sHQPD4xOMTjwdAJvyZ8GfCB0Ba\u002f279u\u002fUHQJACRAoQKQhAxAUZF2RcCED8CO4juI8IQDAMwzAMwwhAZA+YPWD2CECcEm1KtCkJQNAVQlcIXQlABBkXZFyQCUA4HOxwsMMJQHAfwX0E9wlApCKWilgqCkDYJWuXrF0KQBApQKQAkQpARCwVsVTECkB4L+q9qPcKQLAyv8r8KgtA5DWU11BeC0AYOWnkpJELQFA8PvH4xAtAhD8T\u002fkz4C0C4QugKoSsMQPBFvRf1XgxAJEmSJEmSDEBYTGcxncUMQJBPPD7x+AxAxFIRS0UsDUD4VeZXmV8NQCxZu2Ttkg1AZFyQcUHGDUCYX2V+lfkNQMxiOovpLA5ABGYPmD1gDkA4aeSkkZMOQGxsubHlxg5ApG+Ovjn6DkDYcmPLjS0PQAx2ONjhYA9ARHkN5TWUD0B4fOLxiccPQKx\u002ft\u002f7d+g9AcEHGBRkXEEAMwzAMwzAQQKZEmxJtShBAQMYFGRdkEEDcR3AfwX0QQHbJ2iVrlxBAEEtFLBWxEECszK8yv8oQQEZOGjlp5BBA4M+EPxP+EEB8Ue9FvRcRQBbTWUxnMRFAsFTEUhFLEUBM1i5Zu2QRQOZXmV9lfhFAgNkDZg+YEUAcW25subERQLbc2HJjyxFAUF5DeQ3lEUDq361\u002ft\u002f4RQIZhGIZhGBJAIOOCjAsyEkC6ZO2StUsSQFbmV5lfZRJA8GfCnwl\u002fEkCK6Syms5gSQCZrl6xdshJAwOwBswfMEkBabmy5seUSQPbv1r9b\u002fxJAkHFBxgUZE0Aq86vMrzITQMR0FtNZTBNAYPaA2QNmE0D6d+vfrX8TQJT5VeZXmRNAMHvA7AGzE0DK\u002fCrzq8wTQGR+lflV5hNAAAAAAAAAFEA="},"y":{"dtype":"f8","bdata":"AAAAAAAAOUArkVgaAMA4QLfMdolSgDhAnrJaTfdAOEDkQgRm7gE4QId9c9M3wzdAhmKoldOEN0Dm8aKswUY3QKErYxgCCTdAug\u002fp2JTLNkAznjTueY42QAjXRVixUTZAOrocFzsVNkDMR7kqF9k1QLl\u002fG5NFnTVABmJDUMZhNUCv7jBimSY1QLUl5Mi+6zRAHAddhDaxNEDekpuUAHc0QP\u002fIn\u002fkcPTRAfKlps4sDNEBXNPnBTMozQJJpTiVgkTNAKElp3cVYM0Ac00nqfSAzQHAH8EuI6DJAH+ZbAuWwMkAsb40NlHkyQJmihG2VQjJAYoBBIukLMkCKCMQrj9UxQA47DIqHnzFA7xcaPdJpMUAwn+1EbzQxQM3QhqFe\u002fzBAyqzlUqDKMEAiMwpZNJYwQNhj9LMaYjBA7j6kY1MuMEC+iDPQvPUvQF7oqYJ3jy9Aupyr3tYpL0DOpTjk2sQuQKEDUZODYC5ALrb069D8LUB1vSPuwpktQHkZ3plZNy1AOcoj75TVLEC0z\u002fTtdHQsQOopUZb5EyxA2tg46CK0K0CH3Kvj8FQrQPA0qohj9ipAEuIz13qYKkDx40jPNjsqQIs66XCX3ilA4eUUvJyCKUDz5cuwRicpQL46Dk+VzChARuTblohyKECJ4jSIIBkoQIY1GSNdwCdAQN2IZz5oJ0C22YNVxBAnQOcqCu3uuSZA09AbLr5jJkB5y7gYMg4mQNwa4axKuSVA+76U6gdlJUDTt9PRaRElQGgFnmJwviRAuKfznBtsJEDEntSAaxokQIzqQA5gySNADYs4Rfl4I0BLgLslNykjQETKya8Z2iJA92hj46CLIkBnXIjAzD0iQJOkOEed8CFAekF0dxKkIUAcMztRLFghQHh5jdTqDCFAkRRrAU7CIEBlBNTXVXggQPRIyFcCLyBAfsSPAqfMH0CKoKWokjwfQA4m0qHHrR5ACFUV7kUgHkB3LW+NDZQdQF+v338eCR1AvdpmxXh\u002fHECQrwReHPcbQNwtuUkJcBtAn1WEiD\u002fqGkDZJmYav2UaQImhXv+H4hlArcVtN5pgGUBLk5PC9d8YQGAK0KCaYBhA6Soj0ojiF0Dr9IxWwGUXQGNoDS5B6hZAU4WkWAtwFkC5S1LWHvcVQJS7Fqd7fxVA6NTxyiEJFUCyl+NBEZQUQPED7AtKIBRAqRkLKcytE0DY2ECZlzwTQH1BjVyszBJAmVPwcgpeEkAqD2rcsfARQDR0+piihBFAtIKhqNwZEUCpOl8LYLAQQBecM8EsSBBA+E09lIXCD0CvtkBMRPcOQFNycaqVLg5A4YDPrnloDUBg4lpZ8KQMQM2WE6r54wtAI575oJUlC0Br+Aw+xGkKQKClTYGFsAlAw6W7atn5CEDT+Fb6v0UIQM2eHzA5lAdAuJcVDEXlBkCQ4ziO4zgGQFOCibYUjwVAB3QHhdjnBECouLL5LkMEQDZQixQYoQNAsjqR1ZMBA0AZeMQ8omQCQHAIJUpDygFAtOuy\u002fXYyAUDjIW5XPZ0AQAKrVleWCgBAHw7Z+gP1\u002fj8UbF+TANr9P+NvQHgixPw\u002fiRl8qWmz+z8OaRIn1qf6P29eA\u002fFnofk\u002fpflOBx+g+D+8OvVp+6P3P64h9hj9rPY\u002feq5RFCS79T8h4QdccM70P5+5GPDh5vM\u002f\u002fTeE0HgE8z81XEr9NCfyP0Qma3YWT\u002fE\u002fMpbmOx188D\u002f3V3mbklzvPzjP2lc1y+0\u002fPpLxrCJE7D\u002froL2aWsfqP1z7PiHdVOk\u002fdaF1QKrs5z9Fk2H4wY7mP9fQAkkkO+U\u002fE1pZMtHx4z8FL2W0yLLiP7lPJs8KfuE\u002fF7ycgpdT4D9W6JCd3WbePwDwUmchO9w\u002fAY9\u002fYvoj2j+CxRaPaCHYP1uTGO1rM9Y\u002foPiEfARa1D9k9Vs9MpXSP4KJnS\u002f15NA\u002fOGqTppqSzj8l8MBQdYTLP+ukw116n8g\u002fpYibzanjxT8bm0igA1HDP2vcytWH58A\u002fU5lE3GxOvT9U153SHiC5PwdzoY4lRLU\u002fjmxPEIG6sT9Eh0+vYgatPwjxVMlsPKc\u002f9BWvbiAXoj+I7Ls++yybPzgkw7YIdZM\u002fvKTnitIMij\u002fm3Terc4R\u002fP5JMRpuOFHA\u002filnql9cnVz8tbpdqMZUkP\u002fdql2oxlSQ\u002filnql9cnVz8STEabjhRwPzLdN6tzhH8\u002fvKTnitIMij\u002fyI8O2CHWTP4jsuz77LJs\u002fxBWvbiAXoj\u002fS8FTJbDynP0SHT69iBq0\u002fbGxPEIG6sT8Hc6GOJUS1PyzXndIeILk\u002fKJlE3GxOvT9r3MrVh+fAPwKbSKADUcM\u002fioibzanjxT\u002frpMNdep\u002fIPwjwwFB1hMs\u002fGWqTppqSzj+CiZ0v9eTQP1P1Wz0yldI\u002foPiEfARa1D9IkxjtazPWP27FFo9oIdg\u002fAY9\u002fYvoj2j\u002fr71JnITvcP1bokJ3dZt4\u002fC7ycgpdT4D+tTybPCn7hPwUvZbTIsuI\u002fBlpZMtHx4z\u002fK0AJJJDvlP0WTYfjBjuY\u002faKF1QKrs5z9O+z4h3VTpP+ugvZpax+o\u002fL5LxrCJE7D84z9pXNcvtP+hXeZuSXO8\u002fLpbmOx188D9EJmt2Fk\u002fxPy1cSv00J\u002fI\u002f+DeE0HgE8z+WuRjw4ebzPxjhB1xwzvQ\u002fda5RFCS79T+kIfYY\u002faz2P7c69Wn7o\u002fc\u002fpflOBx+g+D9lXgPxZ6H5PwlpEifWp\u002fo\u002fiRl8qWmz+z\u002fYb0B4IsT8Pw5sX5MA2v0\u002fFA7Z+gP1\u002fj8Aq1ZXlgoAQOMhblc9nQBAruuy\u002fXYyAUBtCCVKQ8oBQBN4xDyiZAJArDqR1ZMBA0AzUIsUGKEDQKG4svkuQwRABHQHhdjnBEBTgom2FI8FQIrjOI7jOAZAtJcVDEXlBkDNnh8wOZQHQMz4Vvq\u002fRQhAv6W7atn5CECZpU2BhbAJQGf4DD7EaQpAI575oJUlC0DFlhOq+eMLQFziWlnwpAxA2YDPrnloDUBLcnGqlS4OQKu2QExE9w5A8E09lIXCD0AVnDPBLEgQQKk6XwtgsBBAsIKhqNwZEUAydPqYooQRQCoPatyx8BFAlVPwcgpeEkB7QY1crMwSQNPYQJmXPBNApxkLKcytE0DxA+wLSiAUQK6X40ERlBRA5dTxyiEJFUCPuxane38VQLRLUtYe9xVAUYWkWAtwFkBfaA0uQeoWQOj0jFbAZRdA6Soj0ojiF0BbCtCgmmAYQEmTk8L13xhArcVtN5pgGUCEoV7\u002fh+IZQNYmZhq\u002fZRpAmlWEiD\u002fqGkDaLblJCXAbQJCvBF4c9xtAuNpmxXh\u002fHEBcr99\u002fHgkdQHEtb40NlB1AA1UV7kUgHkALJtKhx60eQIWgpaiSPB9Ae8SPAqfMH0D0SMhXAi8gQGME1NdVeCBAkBRrAU7CIEB4eY3U6gwhQBkzO1EsWCFAeEF0dxKkIUCQpDhHnfAhQGZciMDMPSJA9Ghj46CLIkBEysmvGdoiQEmAuyU3KSNACos4Rfl4I0CM6kAOYMkjQMOe1IBrGiRAtafznBtsJEBjBZ5icL4kQNO309FpESVA976U6gdlJUDXGuGsSrklQHnLuBgyDiZA0NAbLr5jJkDiKgrt7rkmQLbZg1XEECdAP92IZz5oJ0CDNRkjXcAnQIniNIggGShAROTblohyKEC6Og5PlcwoQPPly7BGJylA4OUUvJyCKUCIOulwl94pQPPjSM82OypAEuIz13qYKkDsNKqIY\u002fYqQILcq+PwVCtA2tg46CK0K0DmKVGW+RMsQK7P9O10dCxAOcoj75TVLEB3Gd6ZWTctQHG9I+7CmS1ALrb069D8LUCfA1GTg2AuQMqlOOTaxC5Aupyr3tYpL0Bc6KmCd48vQLqIM9C89S9A6j6kY1MuMEDYY\u002fSzGmIwQCAzClk0ljBAxqzlUqDKMEDN0IahXv8wQC6f7URvNDFA7RcaPdJpMUAOOwyKh58xQIgIxCuP1TFAYIBBIukLMkCZooRtlUIyQCxvjQ2UeTJAHeZbAuWwMkBwB\u002fBLiOgyQBzTSep9IDNAJklp3cVYM0CSaU4lYJEzQFc0+cFMyjNAeqlps4sDNED7yJ\u002f5HD00QN6Sm5QAdzRAGQddhDaxNECzJeTIvus0QK\u002fuMGKZJjVABGJDUMZhNUC3fxuTRZ01QMxHuSoX2TVAOrocFzsVNkAF10VYsVE2QDOeNO55jjZAug\u002fp2JTLNkCfK2MYAgk3QOHxoqzBRjdAhmKoldOEN0CEfXPTN8M3QOBCBGbuAThAnrJaTfdAOEC0zHaJUoA4QCmRWBoAwDhAAAAAAAAAOUA="},"type":"scatter"},{"line":{"color":"red","dash":"dash","width":2},"mode":"lines","name":"Tangent line (slope = 7)","x":{"dtype":"f8","bdata":"AAAAAAAA4D\u002f2KwVq\u002fUrhP+tXCtT6leI\u002f4YMPPvjg4z\u002fXrxSo9SvlP8zbGRLzduY\u002fwgcffPDB5z+4MyTm7QzpP65fKVDrV+o\u002fo4suuuii6z+ZtzMk5u3sP47jOI7jOO4\u002fhA8++OCD7z+9nSExb2fwP7gzJObtDPE\u002fsskmm2yy8T+uXylQ61fyP6j1KwVq\u002ffI\u002fo4suuuii8z+eITFvZ0j0P5m3MyTm7fQ\u002flE022WST9T+O4ziO4zj2P4p5O0Ni3vY\u002fhA8++OCD9z9\u002fpUCtXyn4P3o7Q2Lezvg\u002fddFFF110+T9wZ0jM2xn6P2r9SoFav\u002fo\u002fZZNNNtlk+z9gKVDrVwr8P1u\u002fUqDWr\u002fw\u002fVlVVVVVV\u002fT9R61cK1Pr9P0yBWr9SoP4\u002fRhdddNFF\u002fz9BrV8pUOv\u002fP54hMW9nSABAnGyyySabAECZtzMk5u0AQJYCtX6lQAFAlE022WSTAUCRmLczJOYBQI7jOI7jOAJAjC666KKLAkCKeTtDYt4CQIfEvJ0hMQNAhA8++OCDA0CCWr9SoNYDQH+lQK1fKQRAffDBBx98BEB6O0Ni3s4EQHeGxLydIQVAddFFF110BUByHMdxHMcFQHBnSMzbGQZAbbLJJptsBkBq\u002fUqBWr8GQGhIzNsZEgdAZZNNNtlkB0Bj3s6QmLcHQGApUOtXCghAXnTRRRddCEBbv1Kg1q8IQFgK1PqVAglAVlVVVVVVCUBToNavFKgJQFHrVwrU+glATjbZZJNNCkBMgVq\u002fUqAKQEnM2xkS8wpARhdddNFFC0BEYt7OkJgLQEGtXylQ6wtAP\u002fjggw8+DEA8Q2LezpAMQDmO4ziO4wxAN9lkk002DUA0JObtDIkNQDJvZ0jM2w1AL7rooosuDkAtBWr9SoEOQCpQ61cK1A5AJ5tssskmD0Al5u0MiXkPQCIxb2dIzA9AED744IMPEECO4ziO4zgQQA6JeTtDYhBAjC666KKLEEAK1PqVArUQQIp5O0Ni3hBACB988MEHEUCHxLydITERQAZq\u002fUqBWhFAhA8++OCDEUADtX6lQK0RQIJav1Kg1hFAAAAAAAAAEkA="},"y":{"dtype":"f8","bdata":"AAAAAAAAH8CIeTtDYt4dwBLzdobEvBzAnGyyySabG8Ak5u0MiXkawK5fKVDrVxnANtlkk002GMDAUqDWrxQXwEjM2xkS8xXA0EUXXXTRFMBcv1Kg1q8TwOQ4juM4jhLAbLLJJptsEcD2KwVq\u002fUoQwPxKgVq\u002fUg7AED744IMPDMAgMW9nSMwJwDQk5u0MiQfARBdddNFFBcBYCtT6lQIDwGj9SoFavwDA8OCDDz74\u002fL8gx3Ecx3H4vzitXylQ6\u002fO\u002fyCabbLLJ7r8Q83aGxLzlv6B+pUCtX9m\u002fwFx00UUXvb+AoNavFKjFP6C3MyTm7dw\u002fiA8++OCD5z+gITFvZ0jwP3w7Q2LezvQ\u002fWFVVVVVV+T84b2dIzNv9P4rEvJ0hMQFAddFFF110A0Bk3s6QmLcFQFLrVwrU+gdARPjggw8+CkAvBWr9SoEMQBoS83aGxA5Ahg8++OCDEED8lQK1fqURQHEcx3EcxxJA6qKLLrroE0BjKVDrVwoVQNivFKj1KxZATjbZZJNNF0DHvJ0hMW8YQDxDYt7OkBlAtskmm2yyGkArUOtXCtQbQKDWrxSo9RxAGl100UUXHkCP4ziO4zgfQAS1fqVALSBAP\u002fjggw++IEB6O0Ni3k4hQLZ+pUCt3yFA8cEHH3xwIkAtBWr9SgEjQGhIzNsZkiNApIsuuugiJEDfzpCYt7MkQBoS83aGRCVAVlVVVVXVJUCRmLczJGYmQM7bGRLz9iZACB988MGHJ0BFYt7OkBgoQIClQK1fqShAuuiiiy46KUD3KwVq\u002fcopQDJvZ0jMWypAbrLJJpvsKkCp9SsFan0rQOQ4juM4DixAIHzwwQefLEBbv1Kg1i8tQJgCtX6lwC1A0kUXXXRRLkAPiXk7Q+IuQErM2xkScy9AwgcffPABMEBgKVDrV0owQP5KgVq\u002fkjBAnGyyySbbMEA4juM4jiMxQNivFKj1azFAddFFF120MUAS83aGxPwxQLIUqPUrRTJATjbZZJONMkDsVwrU+tUyQIp5O0NiHjNAJ5tssslmM0DFvJ0hMa8zQGTezpCY9zNAAAAAAABANEA="},"type":"scatter"},{"marker":{"color":"black","size":10},"mode":"markers+text","name":"(2.5, 6.25)","text":["(2.5, 6.25)"],"textposition":"bottom right","x":[2.5],"y":[6.25],"type":"scatter"}],                        {"template":{"data":{"barpolar":[{"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"barpolar"}],"bar":[{"error_x":{"color":"#2a3f5f"},"error_y":{"color":"#2a3f5f"},"marker":{"line":{"color":"white","width":0.5},"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"bar"}],"carpet":[{"aaxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"baxis":{"endlinecolor":"#2a3f5f","gridcolor":"#C8D4E3","linecolor":"#C8D4E3","minorgridcolor":"#C8D4E3","startlinecolor":"#2a3f5f"},"type":"carpet"}],"choropleth":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"choropleth"}],"contourcarpet":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"contourcarpet"}],"contour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"contour"}],"heatmap":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"heatmap"}],"histogram2dcontour":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2dcontour"}],"histogram2d":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"histogram2d"}],"histogram":[{"marker":{"pattern":{"fillmode":"overlay","size":10,"solidity":0.2}},"type":"histogram"}],"mesh3d":[{"colorbar":{"outlinewidth":0,"ticks":""},"type":"mesh3d"}],"parcoords":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"parcoords"}],"pie":[{"automargin":true,"type":"pie"}],"scatter3d":[{"line":{"colorbar":{"outlinewidth":0,"ticks":""}},"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatter3d"}],"scattercarpet":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattercarpet"}],"scattergeo":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergeo"}],"scattergl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattergl"}],"scattermapbox":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermapbox"}],"scattermap":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scattermap"}],"scatterpolargl":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolargl"}],"scatterpolar":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterpolar"}],"scatter":[{"fillpattern":{"fillmode":"overlay","size":10,"solidity":0.2},"type":"scatter"}],"scatterternary":[{"marker":{"colorbar":{"outlinewidth":0,"ticks":""}},"type":"scatterternary"}],"surface":[{"colorbar":{"outlinewidth":0,"ticks":""},"colorscale":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"type":"surface"}],"table":[{"cells":{"fill":{"color":"#EBF0F8"},"line":{"color":"white"}},"header":{"fill":{"color":"#C8D4E3"},"line":{"color":"white"}},"type":"table"}]},"layout":{"annotationdefaults":{"arrowcolor":"#2a3f5f","arrowhead":0,"arrowwidth":1},"autotypenumbers":"strict","coloraxis":{"colorbar":{"outlinewidth":0,"ticks":""}},"colorscale":{"diverging":[[0,"#8e0152"],[0.1,"#c51b7d"],[0.2,"#de77ae"],[0.3,"#f1b6da"],[0.4,"#fde0ef"],[0.5,"#f7f7f7"],[0.6,"#e6f5d0"],[0.7,"#b8e186"],[0.8,"#7fbc41"],[0.9,"#4d9221"],[1,"#276419"]],"sequential":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]],"sequentialminus":[[0.0,"#0d0887"],[0.1111111111111111,"#46039f"],[0.2222222222222222,"#7201a8"],[0.3333333333333333,"#9c179e"],[0.4444444444444444,"#bd3786"],[0.5555555555555556,"#d8576b"],[0.6666666666666666,"#ed7953"],[0.7777777777777778,"#fb9f3a"],[0.8888888888888888,"#fdca26"],[1.0,"#f0f921"]]},"colorway":["#636efa","#EF553B","#00cc96","#ab63fa","#FFA15A","#19d3f3","#FF6692","#B6E880","#FF97FF","#FECB52"],"font":{"color":"#2a3f5f"},"geo":{"bgcolor":"white","lakecolor":"white","landcolor":"white","showlakes":true,"showland":true,"subunitcolor":"#C8D4E3"},"hoverlabel":{"align":"left"},"hovermode":"closest","mapbox":{"style":"light"},"margin":{"b":0,"l":0,"r":0,"t":30},"paper_bgcolor":"white","plot_bgcolor":"white","polar":{"angularaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""},"bgcolor":"white","radialaxis":{"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":""}},"scene":{"xaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"yaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"},"zaxis":{"backgroundcolor":"white","gridcolor":"#DFE8F3","gridwidth":2,"linecolor":"#EBF0F8","showbackground":true,"ticks":"","zerolinecolor":"#EBF0F8"}},"shapedefaults":{"line":{"color":"#2a3f5f"}},"ternary":{"aaxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"baxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""},"bgcolor":"white","caxis":{"gridcolor":"#DFE8F3","linecolor":"#A2B1C6","ticks":""}},"title":{"x":0.05},"xaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2},"yaxis":{"automargin":true,"gridcolor":"#EBF0F8","linecolor":"#EBF0F8","ticks":"","title":{"standoff":15},"zerolinecolor":"#EBF0F8","zerolinewidth":2}}},"xaxis":{"title":{"text":"x"},"range":[-6,6]},"yaxis":{"title":{"text":"y"},"range":[-3,16]},"margin":{"t":50,"b":70},"title":{"text":"Tangent line at (2.5,6.25) on y = x\u00b2 | Slope = 7"},"legend":{"title":{"text":"Legend"}},"height":350},                        {"responsive": true}                    ).then(function(){
+                            
+var gd = document.getElementById('c74beee4-26b9-4174-b010-252b2f3a28b1');
+var x = new MutationObserver(function (mutations, observer) {{
+        var display = window.getComputedStyle(gd).display;
+        if (!display || display === 'none') {{
+            console.log([gd, 'removed!']);
+            Plotly.purge(gd);
+            observer.disconnect();
+        }}
+}});
+
+// Listen for the removal of the full notebook cells
+var notebookContainer = gd.closest('#notebook-container');
+if (notebookContainer) {{
+    x.observe(notebookContainer, {childList: true});
+}}
+
+// Listen for the clearing of the current output cell
+var outputEl = gd.closest('.output');
+if (outputEl) {{
+    x.observe(outputEl, {childList: true});
+}}
+
+                        })                };            </script>        </div>
+</div>
+</div>
+<p><br> As we can see it’s not the tangent.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
